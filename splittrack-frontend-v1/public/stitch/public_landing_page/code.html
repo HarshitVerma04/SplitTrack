@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SplitTrack | Split expenses, not friendships.</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-container": "#712ca4",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#240b4a",
+                        "secondary-fixed-dim": "#d4bbff",
+                        "on-surface-variant": "#4b4451",
+                        "on-primary-container": "#d4b4ff",
+                        "inverse-primary": "#d8baff",
+                        "outline": "#7c7483",
+                        "surface": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ebdcff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#7347b0",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary": "#695392",
+                        "on-surface": "#191c1d",
+                        "tertiary": "#58088b",
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "outline-variant": "#cdc3d3",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#67209a",
+                        "surface-container": "#edeeef",
+                        "on-secondary-fixed-variant": "#513b79",
+                        "tertiary-fixed": "#f2daff",
+                        "primary-fixed": "#eddcff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#deb1ff",
+                        "secondary-container": "#d2b7ff",
+                        "primary": "#4c1b87",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary-fixed-variant": "#5a2d96",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#d8baff",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed": "#290055",
+                        "on-tertiary-fixed": "#2e004e",
+                        "on-secondary-container": "#5b4583",
+                        "surface-dim": "#d9dadb",
+                        "primary-container": "#6437a0",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#e1b6ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #4c1b87 0%, #6437a0 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-[#191c1d] docked full-width top-0 z-40">
+<nav class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#4c1b87] dark:text-[#d0bcff] tracking-tighter font-headline">SplitTrack</span>
+<div class="hidden md:flex gap-6">
+<a class="text-[#4b4451] dark:text-[#cac4cf] font-medium font-manrope font-semibold text-lg tracking-tight hover:bg-[#f3f4f5] dark:hover:bg-[#232627] transition-colors duration-200 px-3 py-1 rounded" href="#">Dashboard</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] font-medium font-manrope font-semibold text-lg tracking-tight hover:bg-[#f3f4f5] dark:hover:bg-[#232627] transition-colors duration-200 px-3 py-1 rounded" href="#">Groups</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] font-medium font-manrope font-semibold text-lg tracking-tight hover:bg-[#f3f4f5] dark:hover:bg-[#232627] transition-colors duration-200 px-3 py-1 rounded" href="#">Activity</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-[#f3f4f5] transition-colors" data-icon="dark_mode">dark_mode</button>
+<button class="hidden md:flex bg-primary text-on-primary px-6 py-2 rounded-full font-bold transition-all scale-98 active:opacity-80">Login</button>
+</div>
+</nav>
+<div class="bg-[#f3f4f5] dark:bg-[#232627] h-[1px] w-full"></div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative pt-20 pb-32 overflow-hidden">
+<div class="max-w-screen-2xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="z-10">
+<span class="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-widest uppercase bg-secondary-container text-on-secondary-container rounded-full font-label">Financial Clarity Redefined</span>
+<h1 class="text-6xl md:text-7xl font-black font-headline text-on-surface leading-[1.1] mb-8 tracking-tighter">
+                        Split expenses, <span class="text-primary italic">not</span> friendships.
+                    </h1>
+<p class="text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
+                        The cleanest, fastest expense tracker for students, roommates, and small teams. Manage debts without the drama.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="primary-gradient text-on-primary px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all scale-98 active:opacity-90">
+                            Get Started Free
+                        </button>
+<button class="bg-surface-container-high text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-surface-container-highest transition-all">
+                            View Demo
+                        </button>
+</div>
+</div>
+<div class="relative">
+<!-- Product Screenshot Placeholder -->
+<div class="relative z-10 rounded-2xl overflow-hidden shadow-[0px_24px_48px_rgba(40,16,78,0.12)] bg-surface-container-lowest p-4">
+<img alt="SplitTrack Dashboard showing expense analytics and group balances" class="rounded-xl w-full" data-alt="Modern clean software interface dashboard showing colorful financial bar charts, expense lists, and group member balances with a minimalist aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRXBVZVmX8h59HGDqaQ0KCycixZWuBV7HDkjJH5rmXBFJlCj8os25EzZvTMS7iXvdCxqdS5zYEdIiE040FALLuOVV4_IE83CTX0THcL4h2F2AuzBxrW52p0oT6ioP64dNbAPz_hnoRm_eHlLUozbBoBwUKYpAiylzLP0P8OGEyOGcSZGOwt5_n1JASFTd5TrvM_CpxtMBLkSjsfPAQ-zkQzWH95cP2Ki2WG5srsDWqXGUCYD64flRcyGbNPtdtr7uKYJrSOzuqeHIF"/>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-12 -left-12 w-72 h-72 bg-secondary/10 rounded-full blur-3xl"></div>
+</div>
+</div>
+</section>
+<!-- Features Bento Grid -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto px-6">
+<div class="mb-16 max-w-2xl">
+<h2 class="text-4xl font-extrabold font-headline mb-4 tracking-tight">Engineered for Efficiency</h2>
+<p class="text-on-surface-variant text-lg">Stop wasting time with spreadsheets. SplitTrack automates the math so you can focus on the memories.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Feature 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/15 flex flex-col gap-6">
+<div class="w-12 h-12 bg-primary-container rounded-xl flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline mb-2">Add expenses in under 10s</h3>
+<p class="text-on-surface-variant leading-relaxed">Swift entry system designed for people on the move. Type, tap, and done.</p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/15 flex flex-col gap-6">
+<div class="w-12 h-12 bg-secondary-container rounded-xl flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="handshake">handshake</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline mb-2">Automated settlements</h3>
+<p class="text-on-surface-variant leading-relaxed">Our smart engine calculates the most efficient way to pay back with minimal transactions.</p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-full border border-outline-variant/15 flex flex-col gap-6">
+<div class="w-12 h-12 bg-tertiary-fixed rounded-xl flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+</div>
+<div>
+<h3 class="text-xl font-bold font-headline mb-2">Detailed analytics</h3>
+<p class="text-on-surface-variant leading-relaxed">Visualize your spending habits with editorial-grade charts and trend reports.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Asymmetric Detail Section -->
+<section class="py-24">
+<div class="max-w-screen-2xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<div class="lg:col-span-7 rounded-2xl overflow-hidden bg-surface-container h-[500px] relative">
+<img alt="Team collaborating over a laptop" class="w-full h-full object-cover grayscale opacity-80" data-alt="High-end editorial photograph of a group of diverse young professionals in a sunlit modern workspace collaborating with focus and joy" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1ejVNqm0bkh1HEVdz8Hib-t7eUILKauRRCJ5y3-4uBBXX8sRZqy40u4cdNDjlUKZarmJvnj6mOf6eoGwDeRhAeEu6a4gcg7VRFL6NAiGBGMd-4WTw_Q8Xxf5P9IgMUt-8LsILFjVO3C4gbCbX_rtOsCkyUA22w7XklSJ3si7u9ZJ_uYsQzmbCIPP64QTOVD10N5_V8KkIChMYFGvrnyK2b6tLlpDeU3vSBebbpR5BxfgjmbAgrCEb4xlKY0h2Fj1aTaEWApdxsVp8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+<div class="absolute bottom-8 left-8 glass-effect p-6 rounded-xl max-w-sm">
+<p class="text-on-surface font-semibold italic">"SplitTrack transformed how our house handles rent and groceries. No more awkward conversations."</p>
+<p class="text-primary font-bold mt-4 font-label uppercase text-xs tracking-widest">— The Loft Collective</p>
+</div>
+</div>
+<div class="lg:col-span-5 flex flex-col gap-8">
+<h2 class="text-5xl font-black font-headline tracking-tighter">Smart algorithms, <br/><span class="text-outline">zero friction.</span></h2>
+<p class="text-lg text-on-surface-variant leading-relaxed">We don't just add numbers. We optimize your group's financial health. From recurring bills to one-off coffee rounds, SplitTrack handles the complexity so you can stay friends.</p>
+<ul class="flex flex-col gap-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Multi-currency support for global trips</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Cloud sync across all devices</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-medium">Instant push notifications for new bills</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- FAQ Section -->
+<section class="py-24 bg-surface">
+<div class="max-w-3xl mx-auto px-6">
+<div class="text-center mb-16">
+<h2 class="text-4xl font-black font-headline mb-4 tracking-tight">Common Questions</h2>
+<p class="text-on-surface-variant">Everything you need to know about the platform.</p>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-white">
+<h4 class="text-lg font-bold mb-2">Is SplitTrack really free?</h4>
+<p class="text-on-surface-variant">Yes, our core features including group tracking and settlements are completely free for students and small teams up to 10 members.</p>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-white">
+<h4 class="text-lg font-bold mb-2">How secure is my financial data?</h4>
+<p class="text-on-surface-variant">We use bank-grade AES-256 encryption. We never store your actual bank login credentials; we only track the balances you enter.</p>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-6 transition-all hover:bg-white">
+<h4 class="text-lg font-bold mb-2">Can I export my data?</h4>
+<p class="text-on-surface-variant">Absolutely. You can export any group history to CSV or PDF with one click for personal record-keeping.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-24">
+<div class="max-w-screen-2xl mx-auto px-6">
+<div class="primary-gradient rounded-full p-12 md:p-24 text-center text-on-primary flex flex-col items-center gap-8 overflow-hidden relative">
+<div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+<h2 class="text-5xl md:text-6xl font-black font-headline tracking-tighter z-10">Ready to clear the air?</h2>
+<p class="text-xl opacity-90 max-w-xl z-10 font-medium">Join over 50,000 users who trust SplitTrack to manage their group expenses every single day.</p>
+<button class="bg-white text-primary px-10 py-4 rounded-xl font-black text-xl hover:scale-105 transition-transform z-10">Get Started Now</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low pt-20 pb-12">
+<div class="max-w-screen-2xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+<div class="col-span-1 md:col-span-1">
+<span class="text-2xl font-black text-[#4c1b87] tracking-tighter font-headline">SplitTrack</span>
+<p class="mt-4 text-on-surface-variant leading-relaxed">Editorial-grade expense tracking for the modern collaborator.</p>
+</div>
+<div>
+<h5 class="font-bold mb-6 text-on-surface">Product</h5>
+<ul class="flex flex-col gap-4 text-on-surface-variant font-medium">
+<li><a class="hover:text-primary transition-colors" href="#">Features</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Security</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Business Plan</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-6 text-on-surface">Company</h5>
+<ul class="flex flex-col gap-4 text-on-surface-variant font-medium">
+<li><a class="hover:text-primary transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Careers</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Contact</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-6 text-on-surface">Legal</h5>
+<ul class="flex flex-col gap-4 text-on-surface-variant font-medium">
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto px-6 pt-8 border-t border-outline-variant/20 flex flex-col md:row justify-between items-center gap-4 text-sm text-on-surface-variant font-medium">
+<p>© 2024 SplitTrack Inc. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Twitter</a>
+<a class="hover:text-primary transition-colors" href="#">Instagram</a>
+<a class="hover:text-primary transition-colors" href="#">LinkedIn</a>
+</div>
+</div>
+</footer>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 dark:bg-[#191c1d]/80 backdrop-blur-xl border-t border-[#4b4451]/10 lg:hidden rounded-t-xl shadow-[0px_-4px_16px_rgba(40,16,78,0.04)]">
+<div class="flex flex-col items-center justify-center bg-[#4c1b87]/10 dark:bg-[#d0bcff]/10 text-[#4c1b87] dark:text-[#d0bcff] rounded-xl px-3 py-1 scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Groups</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 scale-95 duration-100">
+<span class="material-symbols-outlined text-4xl" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Add</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 scale-95 duration-100">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Profile</span>
+</div>
+</nav>
+</body></html>

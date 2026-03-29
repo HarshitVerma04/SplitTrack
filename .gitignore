@@ -1,0 +1,4 @@
+# Ignore original Stitch exports and temporary scaffold folders at repo root
+/stitch/
+/splittrack-ui/
+/splittrack-web/

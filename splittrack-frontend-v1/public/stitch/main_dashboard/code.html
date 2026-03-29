@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SplitTrack | Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#e1e3e4",
+                        "tertiary-container": "#712ca4",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#240b4a",
+                        "secondary-fixed-dim": "#d4bbff",
+                        "on-surface-variant": "#4b4451",
+                        "on-primary-container": "#d4b4ff",
+                        "inverse-primary": "#d8baff",
+                        "outline": "#7c7483",
+                        "surface": "#f8f9fa",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ebdcff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#7347b0",
+                        "surface-container-high": "#e7e8e9",
+                        "secondary": "#695392",
+                        "on-surface": "#191c1d",
+                        "tertiary": "#58088b",
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "inverse-surface": "#2e3132",
+                        "outline-variant": "#cdc3d3",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#67209a",
+                        "surface-container": "#edeeef",
+                        "on-secondary-fixed-variant": "#513b79",
+                        "tertiary-fixed": "#f2daff",
+                        "primary-fixed": "#eddcff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#deb1ff",
+                        "secondary-container": "#d2b7ff",
+                        "primary": "#4c1b87",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-bright": "#f8f9fa",
+                        "on-primary-fixed-variant": "#5a2d96",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#d8baff",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed": "#290055",
+                        "on-tertiary-fixed": "#2e004e",
+                        "on-secondary-container": "#5b4583",
+                        "surface-dim": "#d9dadb",
+                        "primary-container": "#6437a0",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#e1b6ff"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .skeleton-pulse {
+            background: linear-gradient(90deg, #f3f4f5 25%, #e7e8e9 50%, #f3f4f5 75%);
+            background-size: 200% 100%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- SideNavBar (Authority Source: JSON) -->
+<aside class="h-screen w-64 fixed left-0 top-0 hidden lg:flex flex-col bg-[#f3f4f5] dark:bg-[#1e1e1e] font-inter text-sm font-medium z-50">
+<div class="py-6 flex flex-col h-full">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-xl" data-alt="minimalist violet geometric logo icon for a financial application on a light background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-y-ktr4v-KxZ9U_AQwE6U8ej3xtqyULZpBihI_ZR1QMmXGAuuKQVu3mXMYnc5Nz0WbaDkvXvH8yRZIa_Q6Cxu-m2xVCiIDEOWeyog7OOfBoyU5L_C3EbsP4IodWnP0PQrKQHEWU3X6Dk_y67ebz7PZlpGM5GD8--CSdNYwjQm6l2--V9t0TzYtazkFr4hOExocJ4uHnSRwGFEZNZbNHAqGe-Ug-VpkeTVPVSJs7dacIWwUKFsEQe021BBbY-F2jifYoPhE59agmhH"/>
+<div>
+<h1 class="font-manrope font-extrabold text-[#4c1b87] dark:text-[#d0bcff] text-xl tracking-tighter">SplitTrack</h1>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Editorial Expense Tracking</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1 px-2 flex-grow">
+<!-- Dashboard is ACTIVE -->
+<a class="bg-white dark:bg-[#2b2b2b] text-[#4c1b87] dark:text-[#d0bcff] font-bold shadow-sm rounded-lg mx-2 px-4 py-3 flex items-center gap-3 transition-all translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Groups</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span>Friends</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span>Activity</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Analytics</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="ios_share">ios_share</span>
+<span>Exports</span>
+</a>
+<a class="text-[#4b4451] dark:text-[#cac4cf] hover:text-[#4c1b87] px-4 py-3 flex items-center gap-3 hover:bg-[#f8f9fa] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span>Notifications</span>
+</a>
+</nav>
+<div class="mt-auto px-4 pt-6 space-y-4">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                    Add Expense
+                </button>
+<div class="flex flex-col gap-1 border-t border-outline-variant/15 pt-4">
+<a class="text-[#4b4451] px-4 py-2 flex items-center gap-3 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="text-[#4b4451] px-4 py-2 flex items-center gap-3 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span>Help</span>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar (Authority Source: JSON) -->
+<header class="bg-white dark:bg-[#191c1d] fixed top-0 right-0 left-0 lg:left-64 z-40">
+<div class="flex justify-between items-center w-full px-6 py-4 max-w-screen-2xl mx-auto">
+<h2 class="font-manrope font-semibold text-lg tracking-tight text-[#4c1b87] dark:text-[#d0bcff]">Dashboard</h2>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-surface-container rounded-full px-4 py-2 w-64">
+<span class="material-symbols-outlined text-outline text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full placeholder:text-outline-variant" placeholder="Search expenses..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f3f4f5] p-2 rounded-full transition-colors" data-icon="dark_mode">dark_mode</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f3f4f5] p-2 rounded-full transition-colors relative" data-icon="notifications">
+                        notifications
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-[#f3f4f5] p-2 rounded-full transition-colors" data-icon="settings">settings</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="User Profile Avatar" data-alt="professional portrait of a young adult with a friendly expression in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHhsE6mjkuuEWpSiZeSu3rE4Yo-zogTxc0BnKQMx-GuldxHsglVJ4pRuGutT1Jwragr-qGO3-0xGVxgF_WplW57gphoNVHZbFneAeQ0PIaAkslbvcVLANL8046EtIIVfSn5WU7123XvAquZYY1hW7BSSdCRiTOIe0qV8yUTC_jhJeDqSFad_Qoqc3JaMQMDO5gIol4BHj7C-ev-AP10NLDyL1TSf-UdnQZdM13I4GvwaocH5_gx548PqW--E0spTGmAFZJtZaAhxNa"/>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-[#f3f4f5] dark:bg-[#232627] h-[1px] w-full"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pb-20 lg:pb-10 lg:pl-72 px-6 min-h-screen">
+<div class="max-w-screen-xl mx-auto space-y-8">
+<!-- Bento Summary Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Net Balance Card -->
+<div class="md:col-span-1 bg-surface-container-lowest p-8 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-8xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<p class="text-on-surface-variant label-sm font-semibold uppercase tracking-widest mb-2">Total Net Balance</p>
+<h3 class="font-headline text-4xl font-extrabold text-primary">₹12,450.00</h3>
+<div class="mt-4 flex items-center gap-2 text-sm text-green-600 font-medium">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+14% from last month</span>
+</div>
+</div>
+<!-- Owed/Owe Split -->
+<div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between">
+<div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-1">You are owed</p>
+<h4 class="font-headline text-2xl font-bold text-primary">₹18,200.00</h4>
+</div>
+<div class="mt-4 flex -space-x-2">
+<img class="h-8 w-8 rounded-full border-2 border-white" data-alt="close-up avatar of a person with a bright smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCju_7axjgYee5ahTHjKzNy4aZULExhu31jp2u5lHlk79Uso6lfGeU9MoxmhqKfdmyKL38vqYVDa6d8A09Nvw4vmHdxEdXccfrn0YrusEsTsZLK_HESD791G-SNmXmFeAULhIVlvJAR0zQfgXYURLPinsINKT7EODIU937qEN9lWkI7VNQTwNJKqNLHSl_MxIgY8g_Qt-XuRcf10qv_73HFdhScbvFWobihXX0UXhQFb4BuhBKd3hqSksGzF3Q-QjmathOnZAkKqav9"/>
+<img class="h-8 w-8 rounded-full border-2 border-white" data-alt="close-up avatar of a person with stylish glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsRWNOnXmDkmuAwnaoPlqHeUENbl_P-PXLtoMoNch8xeOlnB_F7eufMmUnTHmj8rw6Ux340FwPJh0Mkvwb7mcIpn0MrX0fUwU4rQCD6P6el1OkC17rjtMcjy6fDpO4LalYsUn4hFKjAt77VieG6Re_hbDQpjZz6JtwABo57G3QUf5waIiSYcfddCPVOLBcJsm6z7DiLp_53GMcMOqWoZdKTLQdi0sp0XcXQOtfZmQ4KT8mtRykNN7730nGrkmobsS6fsRzdhZyBs2a"/>
+<img class="h-8 w-8 rounded-full border-2 border-white" data-alt="close-up avatar of a person wearing a colorful beanie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyvq9z_FFA2I87vRutojl2q7y_22AQti1HY0A-HjP6JPTqsaUlZCLgJZ3pdxUbL3ioDzCbyHyh-lrOPqTW9SQE4Az5LaxfKJaL52YSsfDBm1pVUvZDndQYQD3y9h-dqAh64Y9pzCk4cGV5L_8pc9J5D2rsJCU4R0v-BEvE-vBTHepX9dBxp-XiHhQj3liUrcmJwm2ac0p0SzsIHge0ei2DeKqBFUuEKGBsUqBV-ZeTdBYThzruHLDEYplxMCM1oVbEY_KbgmhW0IFT"/>
+<div class="h-8 w-8 rounded-full bg-primary-container text-white flex items-center justify-center text-[10px] font-bold border-2 border-white">+4</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between">
+<div>
+<p class="text-on-surface-variant text-xs font-bold uppercase tracking-widest mb-1">You owe</p>
+<h4 class="font-headline text-2xl font-bold text-error">₹5,750.00</h4>
+</div>
+<div class="mt-4 flex -space-x-2">
+<img class="h-8 w-8 rounded-full border-2 border-white" data-alt="close-up avatar of a person with a short beard" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOENuOR9bwguI0saUaXDLvN0x49R9ucu6jsS5ctivrlPrE4XMDGvnQJfFYCSecnz-6b5q9EPAAh8FexwuTH3zFMwA-8R494OoO9xyDahIKalriWLT3rsKBbJ1QiK9yCDZanpnFh-hNKdmFobWMThkw6T6Ws7bMCRkZGx3Hdg0uEC31Zj9ie0DJolyiTg_r_lTkXJfSdhZMXwagfH3_wTNz6_kJ0kzTi8pOaKpvRPG74_IfLz-E77rwsqSuxdua4Tn1Brf7kmOWcpD"/>
+<img class="h-8 w-8 rounded-full border-2 border-white" data-alt="close-up avatar of a person with long wavy hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmD_Q6SCvozXzuUlcjXIemEXaYLpCbmmJ9ptQkO4Bb9QpQyT7B4yrzRlOxhoweYJm80LXNh9-S2KlBM_-7s2oQh5_9wKTfOzkspem2oXwWTHxJt1PrZZKhRqjC8D_iCffqvQMF_90O0wxcIsJJfoJ0caKHaUoB1D1KWzgyzGvMoHGXisuf0WfsRSSIefJo8SIcV1onCCY5vBR538NqR11rDBp7igLBdXsbNUdrsCBYqutY3JFXZD6UCAtLJKKRSAXSaYS1utbxudbu"/>
+<div class="h-8 w-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center text-[10px] font-bold border-2 border-white">+1</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions Bar -->
+<section class="flex flex-wrap items-center gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 shadow-md active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                    Add Expense
+                </button>
+<button class="bg-surface-container-high text-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
+<span class="material-symbols-outlined">payments</span>
+                    Settle Up
+                </button>
+<button class="bg-surface-container-high text-primary px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
+<span class="material-symbols-outlined">group_add</span>
+                    New Group
+                </button>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Activity Feed (Main Content) -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-xl font-bold">Recent Activity</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<!-- Activity Item 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between group hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="bg-tertiary-fixed h-12 w-12 rounded-xl flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="font-bold text-sm">Dinner at Soho House</p>
+<p class="text-on-surface-variant text-xs">You added this in <span class="font-semibold">Weekend Trip</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-medium">2 hours ago</p>
+<p class="text-primary font-bold">₹4,200.00</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between group hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-4">
+<div class="bg-secondary-fixed h-12 w-12 rounded-xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<div>
+<p class="font-bold text-sm">Electricity Bill</p>
+<p class="text-on-surface-variant text-xs">Rohan S. paid this in <span class="font-semibold">Flatmates</span></p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-xs text-on-surface-variant font-medium">Yesterday</p>
+<p class="text-error font-bold">- ₹1,150.00</p>
+</div>
+</div>
+<!-- Skeleton State 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl flex items-center justify-between opacity-50">
+<div class="flex items-center gap-4 w-full">
+<div class="h-12 w-12 rounded-xl skeleton-pulse"></div>
+<div class="space-y-2 w-1/3">
+<div class="h-4 skeleton-pulse rounded w-full"></div>
+<div class="h-3 skeleton-pulse rounded w-2/3"></div>
+</div>
+</div>
+<div class="w-20 space-y-2">
+<div class="h-3 skeleton-pulse rounded w-full"></div>
+<div class="h-4 skeleton-pulse rounded w-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Group Summary (Sidebar Content) -->
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="font-headline text-xl font-bold">Active Groups</h3>
+<span class="bg-surface-container-highest px-2 py-1 rounded text-[10px] font-bold uppercase tracking-tighter">4 Total</span>
+</div>
+<div class="bg-surface-container-low rounded-2xl overflow-hidden p-1">
+<!-- Group Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl mb-1 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">apartment</span>
+</div>
+<p class="font-bold">Flatmates</p>
+</div>
+<p class="text-error font-bold text-sm">₹2,400</p>
+</div>
+<div class="flex items-center justify-between text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">
+<span>3 Members</span>
+<span class="text-error">You owe</span>
+</div>
+</div>
+<!-- Group Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-xl mb-1 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">flight_takeoff</span>
+</div>
+<p class="font-bold">Leh Roadtrip</p>
+</div>
+<p class="text-green-600 font-bold text-sm">₹12,850</p>
+</div>
+<div class="flex items-center justify-between text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">
+<span>6 Members</span>
+<span class="text-green-600">You are owed</span>
+</div>
+</div>
+<!-- Skeleton Card -->
+<div class="p-4 rounded-xl mb-1 bg-surface-container-lowest/50">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3 w-1/2">
+<div class="w-10 h-10 rounded-lg skeleton-pulse"></div>
+<div class="h-4 skeleton-pulse rounded w-2/3"></div>
+</div>
+<div class="w-16 h-4 skeleton-pulse rounded"></div>
+</div>
+<div class="flex justify-between">
+<div class="w-12 h-2 skeleton-pulse rounded"></div>
+<div class="w-16 h-2 skeleton-pulse rounded"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Authority Source: JSON) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 dark:bg-[#191c1d]/80 backdrop-blur-xl border-t border-[#4b4451]/10 shadow-[0px_-4px_16px_rgba(40,16,78,0.04)]">
+<!-- Home is Active -->
+<a class="flex flex-col items-center justify-center bg-[#4c1b87]/10 dark:bg-[#d0bcff]/10 text-[#4c1b87] dark:text-[#d0bcff] rounded-xl px-3 py-1 scale-95 duration-100" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 active:bg-[#f3f4f5]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Groups</span>
+</a>
+<div class="relative -top-4">
+<button class="bg-primary text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-primary/30 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 active:bg-[#f3f4f5]" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#4b4451] dark:text-[#cac4cf] opacity-60 active:bg-[#f3f4f5]" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[10px] uppercase tracking-widest font-bold">Profile</span>
+</a>
+</nav>
+</body></html>
