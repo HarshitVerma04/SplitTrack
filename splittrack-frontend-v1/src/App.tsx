@@ -1,10 +1,13 @@
 import { AnimatePresence } from 'framer-motion'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { StitchFrame } from './components/StitchFrame'
 import { LoginPage, OnboardingPage, SignupPage } from './pages/AuthPages'
 import { AnalyticsDeepPage } from './pages/AnalyticsDeepPage'
+import { AddExpensePage } from './pages/AddExpensePage'
+import { DashboardPage } from './pages/DashboardPage'
 import { ExpenseDetailPage } from './pages/ExpenseDetailPage'
 import { ExportsPage } from './pages/ExportsPage'
+import { GroupLedgerPage } from './pages/GroupLedgerPage'
+import { LandingPage } from './pages/LandingPage'
 import { NotificationsPage } from './pages/NotificationsPage'
 import { OneOnOnePage } from './pages/OneOnOnePage'
 import { SettingsPage } from './pages/SettingsPage'
@@ -16,42 +19,10 @@ function App() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route
-          path="/landing"
-          element={
-            <StitchFrame
-              title="SplitTrack Public Landing"
-              src="/stitch/public_landing_page/code.html"
-            />
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <StitchFrame
-              title="SplitTrack Dashboard"
-              src="/stitch/main_dashboard/code.html"
-            />
-          }
-        />
-        <Route
-          path="/group-ledger"
-          element={
-            <StitchFrame
-              title="SplitTrack Group Ledger"
-              src="/stitch/group_ledger_dark_mode/code.html"
-            />
-          }
-        />
-        <Route
-          path="/add-expense"
-          element={
-            <StitchFrame
-              title="SplitTrack Add Expense"
-              src="/stitch/add_expense_itemized_split/code.html"
-            />
-          }
-        />
+        <Route path="/landing" element={<LandingPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/group-ledger" element={<GroupLedgerPage />} />
+        <Route path="/add-expense" element={<AddExpensePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />

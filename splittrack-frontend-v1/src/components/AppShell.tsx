@@ -1,7 +1,8 @@
-import { Bell, ChartNoAxesColumn, FileDown, HandCoins, House, ReceiptText, Settings, UserRound, Users } from 'lucide-react'
+import { Bell, ChartNoAxesColumn, FileDown, HandCoins, House, Moon, ReceiptText, Settings, Sun, UserRound, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { NavLink } from 'react-router-dom'
 import type { PropsWithChildren } from 'react'
+import { useTheme } from '../theme/ThemeProvider'
 
 type AppShellProps = PropsWithChildren<{
   title: string
@@ -20,6 +21,8 @@ const navItems = [
 ]
 
 export function AppShell({ title, subtitle, children }: AppShellProps) {
+  const { resolvedTheme, toggleTheme } = useTheme()
+
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d] dark:bg-[#191c1d] dark:text-[#f0f1f2]">
       <div className="mx-auto flex w-full max-w-[1600px]">
@@ -64,9 +67,18 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
                   <p className="text-sm text-[#4b4451] dark:text-[#cac4cf]">{subtitle}</p>
                 ) : null}
               </div>
-              <button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]">
-                <UserRound size={18} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleTheme}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]"
+                  aria-label="Toggle theme"
+                >
+                  {resolvedTheme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+                </button>
+                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]">
+                  <UserRound size={18} />
+                </button>
+              </div>
             </div>
           </header>
 
