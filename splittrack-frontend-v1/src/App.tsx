@@ -1,36 +1,14 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
-
-type StitchFrameProps = {
-  title: string
-  src: string
-}
-
-const pageTransition = {
-  duration: 0.2,
-  ease: [0.22, 1, 0.36, 1],
-} as const
-
-function StitchFrame({ title, src }: StitchFrameProps) {
-  return (
-    <motion.main
-      key={src}
-      aria-label={title}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={pageTransition}
-      className="h-screen w-screen overflow-hidden"
-    >
-      <iframe
-        title={title}
-        src={src}
-        className="h-full w-full border-0"
-        loading="eager"
-      />
-    </motion.main>
-  )
-}
+import { StitchFrame } from './components/StitchFrame'
+import { LoginPage, OnboardingPage, SignupPage } from './pages/AuthPages'
+import { AnalyticsDeepPage } from './pages/AnalyticsDeepPage'
+import { ExpenseDetailPage } from './pages/ExpenseDetailPage'
+import { ExportsPage } from './pages/ExportsPage'
+import { NotificationsPage } from './pages/NotificationsPage'
+import { OneOnOnePage } from './pages/OneOnOnePage'
+import { SettingsPage } from './pages/SettingsPage'
+import { SettlementsPage } from './pages/SettlementsPage'
 
 function App() {
   const location = useLocation()
@@ -74,6 +52,16 @@ function App() {
             />
           }
         />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/onboarding" element={<OnboardingPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/settlements" element={<SettlementsPage />} />
+        <Route path="/one-on-one" element={<OneOnOnePage />} />
+        <Route path="/analytics-deep" element={<AnalyticsDeepPage />} />
+        <Route path="/exports" element={<ExportsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/expense-detail" element={<ExpenseDetailPage />} />
         <Route path="*" element={<Navigate to="/landing" replace />} />
       </Routes>
     </AnimatePresence>

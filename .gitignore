@@ -2,3 +2,8 @@
 /stitch/
 /splittrack-ui/
 /splittrack-web/
+
+# Ignore accidental root-level npm artifacts
+/node_modules/
+/package.json
+/package-lock.json
