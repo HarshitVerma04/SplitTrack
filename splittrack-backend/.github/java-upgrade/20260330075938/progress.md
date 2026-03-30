@@ -90,24 +90,26 @@
      - Result: ✅ SUCCESS (Maven 4.0.0-rc-5 detected with Java 25.0.2)
      - Notes: appmod-install-maven latest returned 3.9.14; Maven 4 installed manually to meet target compatibility.
    - **Deferred Work**: None
-   - **Commit**: Pending
+  - **Commit**: 137441e - Step 1: Setup Environment - Compile: N/A
 
  - **Step 2: Setup Baseline**
-   - **Status**: 🔘 Not Started
+   - **Status**: ✅ Completed
    - **Changes Made**:
-     - None
+     - Ran baseline test-compile on Java 23 with Maven 3.9.14
+     - Ran baseline tests and captured surefire report outcome
+     - Documented pre-upgrade baseline pass rate for final gate comparison
    - **Review Code Changes**:
-     - Sufficiency: 🔘 Pending
-     - Necessity: 🔘 Pending
-       - Functional Behavior: 🔘 Pending
-       - Security Controls: 🔘 Pending
+     - Sufficiency: ✅ All required changes present
+     - Necessity: ✅ All changes necessary
+       - Functional Behavior: ✅ Preserved
+       - Security Controls: ✅ Preserved
    - **Verification**:
-     - Command: Pending
-     - JDK: Pending
-     - Build tool: Pending
-     - Result: Pending
-     - Notes: Pending
-   - **Deferred Work**: None
+     - Command: mvn clean test-compile -q; mvn clean test -q
+     - JDK: C:\Program Files\Java\jdk-23
+     - Build tool: C:\Program Files\Apache\maven\apache-maven-3.9.14-bin\bin\mvn.cmd
+     - Result: ✅ Compilation SUCCESS | ❗ Tests: 0/1 passed (1 error)
+     - Notes: Baseline test failure is pre-existing; Flyway migration uses TIMESTAMPTZ unsupported by H2.
+   - **Deferred Work**: Re-check this known failure under Java 25 during Final Validation.
    - **Commit**: Pending
 
  - **Step 3: Upgrade Runtime Target to Java 25**
