@@ -110,23 +110,25 @@
      - Result: ✅ Compilation SUCCESS | ❗ Tests: 0/1 passed (1 error)
      - Notes: Baseline test failure is pre-existing; Flyway migration uses TIMESTAMPTZ unsupported by H2.
    - **Deferred Work**: Re-check this known failure under Java 25 during Final Validation.
-   - **Commit**: Pending
+  - **Commit**: 92c54a8 - Step 2: Setup Baseline - Compile: SUCCESS, Tests: 0/1 passed
 
  - **Step 3: Upgrade Runtime Target to Java 25**
-   - **Status**: 🔘 Not Started
+   - **Status**: ✅ Completed
    - **Changes Made**:
-     - None
+     - Updated splittrack-backend pom java.version from 23 to 25
+     - Switched compile verification to Maven 4.0.0-rc-5 with JDK 25
+     - Verified test-compile succeeds on new runtime target
    - **Review Code Changes**:
-     - Sufficiency: 🔘 Pending
-     - Necessity: 🔘 Pending
-       - Functional Behavior: 🔘 Pending
-       - Security Controls: 🔘 Pending
+     - Sufficiency: ✅ All required changes present
+     - Necessity: ✅ All changes necessary
+       - Functional Behavior: ✅ Preserved
+       - Security Controls: ✅ Preserved
    - **Verification**:
-     - Command: Pending
-     - JDK: Pending
-     - Build tool: Pending
-     - Result: Pending
-     - Notes: Pending
+     - Command: mvn clean test-compile -q
+     - JDK: C:\Users\harsh\.jdk\jdk-25
+     - Build tool: C:\Users\harsh\.maven\apache-maven-4.0.0-rc-5\bin\mvn.cmd
+     - Result: ✅ Compilation SUCCESS
+     - Notes: Tests intentionally deferred to final validation step.
    - **Deferred Work**: None
    - **Commit**: Pending
 
