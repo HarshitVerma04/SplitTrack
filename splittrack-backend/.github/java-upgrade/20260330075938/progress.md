@@ -151,7 +151,7 @@
      - Result: ✅ Compilation SUCCESS | ✅ Tests: 1/1 passed
      - Notes: Lombok emits JDK 25 Unsafe deprecation warnings; no functional test impact.
    - **Deferred Work**: None
-   - **Commit**: Pending
+  - **Commit**: 0ed75bd - Step 4: Final Validation - Compile: SUCCESS, Tests: 1/1 passed
 
 <!--
   For each step in plan.md, track progress using this bullet list format:
