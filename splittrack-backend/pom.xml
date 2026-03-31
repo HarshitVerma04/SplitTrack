@@ -18,7 +18,7 @@
     <description>SplitTrack backend service</description>
 
     <properties>
-        <java.version>25</java.version>
+        <java.version>23</java.version>
         <jjwt.version>0.12.6</jjwt.version>
         <lombok.version>1.18.38</lombok.version>
     </properties>

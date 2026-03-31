@@ -2,6 +2,8 @@
 
 :root {
   color-scheme: light dark;
+  --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ui-fast: 180ms;
 }
 
 html,
@@ -13,7 +15,56 @@ body,
 }
 
 body {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   font-family: Inter, sans-serif;
   background: #f8f9fa;
+}
+
+a,
+button,
+summary {
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    box-shadow var(--ui-fast) var(--ui-ease),
+    background-color var(--ui-fast) var(--ui-ease),
+    border-color var(--ui-fast) var(--ui-ease),
+    color var(--ui-fast) var(--ui-ease);
+}
+
+@media (hover: hover) {
+  a:hover,
+  button:hover,
+  summary:hover {
+    transform: translateY(-1px);
+  }
+}
+
+a:active,
+button:active {
+  transform: translateY(0);
+}
+
+.card-interactive {
+  transition:
+    transform var(--ui-fast) var(--ui-ease),
+    box-shadow var(--ui-fast) var(--ui-ease);
+}
+
+@media (hover: hover) {
+  .card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 24px rgba(25, 28, 29, 0.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }

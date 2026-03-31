@@ -7,3 +7,7 @@
 /node_modules/
 /package.json
 /package-lock.json
+
+# Ignore backend generated/build files
+/splittrack-backend/target/
+/splittrack-backend/.idea/

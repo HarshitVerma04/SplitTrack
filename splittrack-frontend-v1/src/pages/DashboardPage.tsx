@@ -33,7 +33,7 @@ export function DashboardPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
+              className="card-interactive rounded-xl bg-white p-5 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
             >
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#4b4451] dark:text-[#cac4cf]">{card.label}</p>
@@ -49,13 +49,13 @@ export function DashboardPage() {
       </section>
 
       <section className="mt-6 flex flex-wrap gap-3">
-        <button className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-5 py-3 text-sm font-bold text-white transition hover:scale-[1.02]">
+        <button className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:scale-[1.02]">
           <Plus size={16} /> Add Expense
         </button>
-        <button className="inline-flex items-center gap-2 rounded-xl bg-[#e7e8e9] px-5 py-3 text-sm font-bold text-[#4c1b87] transition hover:bg-[#e1e3e4] dark:bg-[#2b2b2b] dark:text-[#d8baff]">
+        <button className="inline-flex items-center gap-2 rounded-xl bg-[#e7e8e9] px-5 py-3 text-sm font-bold text-[#4c1b87] transition hover:-translate-y-0.5 hover:bg-[#e1e3e4] dark:bg-[#2b2b2b] dark:text-[#d8baff]">
           <Bolt size={16} /> Settle Now
         </button>
-        <button className="inline-flex items-center gap-2 rounded-xl bg-[#e7e8e9] px-5 py-3 text-sm font-bold text-[#4c1b87] transition hover:bg-[#e1e3e4] dark:bg-[#2b2b2b] dark:text-[#d8baff]">
+        <button className="inline-flex items-center gap-2 rounded-xl bg-[#e7e8e9] px-5 py-3 text-sm font-bold text-[#4c1b87] transition hover:-translate-y-0.5 hover:bg-[#e1e3e4] dark:bg-[#2b2b2b] dark:text-[#d8baff]">
           <UsersRound size={16} /> New Group
         </button>
       </section>
@@ -73,7 +73,7 @@ export function DashboardPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
+                className="card-interactive rounded-xl bg-white p-4 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
@@ -101,7 +101,7 @@ export function DashboardPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
+                className="card-interactive rounded-xl bg-white p-4 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]"
               >
                 <p className="font-semibold text-[#191c1d] dark:text-[#f0f1f2]">{group.name}</p>
                 <div className="mt-1 flex items-center justify-between text-xs text-[#4b4451] dark:text-[#cac4cf]">

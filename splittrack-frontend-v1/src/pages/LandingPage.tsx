@@ -76,13 +76,43 @@ export function LandingPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.2, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-            className="relative rounded-2xl bg-white p-4 shadow-[0px_24px_48px_rgba(40,16,78,0.12)] dark:bg-[#232627]"
+            whileHover={{ y: -4, rotateX: 1.2, rotateY: -1.2 }}
+            className="relative rounded-2xl bg-white p-4 shadow-[0px_24px_48px_rgba(40,16,78,0.12)] transition-shadow hover:shadow-[0px_28px_56px_rgba(40,16,78,0.18)] dark:bg-[#232627]"
           >
-            <img
-              src="/stitch/public_landing_page/screen.png"
-              alt="SplitTrack dashboard preview"
-              className="h-full w-full rounded-xl object-cover"
-            />
+            <div className="rounded-xl bg-gradient-to-br from-[#fcf8ff] to-[#f1e7ff] p-4 ring-1 ring-[#d8c2f2] dark:from-[#2a2332] dark:to-[#221b2b] dark:ring-[#3a3144]">
+              <div className="mb-3 flex items-center justify-between">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#6437a0] dark:text-[#d8baff]">Live preview</p>
+                <span className="rounded-full bg-[#4c1b87] px-2 py-1 text-[10px] font-bold text-white">Interactive</span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-[#e3d2f7] transition-transform hover:scale-[1.02] dark:bg-[#2f2738] dark:ring-[#453a52]">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4b4451] dark:text-[#cac4cf]">Net position</p>
+                  <p className="mt-1 font-[Manrope] text-2xl font-extrabold text-[#4c1b87] dark:text-[#d8baff]">₹12,450</p>
+                  <p className="text-xs text-[#4b4451] dark:text-[#cac4cf]">+14% this month</p>
+                </div>
+                <div className="rounded-lg bg-white p-3 shadow-sm ring-1 ring-[#e3d2f7] transition-transform hover:scale-[1.02] dark:bg-[#2f2738] dark:ring-[#453a52]">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[#4b4451] dark:text-[#cac4cf]">Pending settlements</p>
+                  <p className="mt-1 font-[Manrope] text-2xl font-extrabold text-[#4c1b87] dark:text-[#d8baff]">3</p>
+                  <p className="text-xs text-[#4b4451] dark:text-[#cac4cf]">1 due today</p>
+                </div>
+              </div>
+              <div className="mt-3 rounded-lg bg-white p-3 shadow-sm ring-1 ring-[#e3d2f7] transition-transform hover:scale-[1.01] dark:bg-[#2f2738] dark:ring-[#453a52]">
+                <div className="mb-2 flex items-center justify-between text-xs font-semibold text-[#4b4451] dark:text-[#cac4cf]">
+                  <span>Recent activity</span>
+                  <span className="text-[#4c1b87] dark:text-[#d8baff]">View all</span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center justify-between rounded-md bg-[#f7f0ff] px-2 py-1.5 dark:bg-[#3a2f47]">
+                    <span>Dinner split</span>
+                    <span className="font-bold text-[#4c1b87] dark:text-[#d8baff]">+₹950</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md bg-[#f7f0ff] px-2 py-1.5 dark:bg-[#3a2f47]">
+                    <span>Cab reimbursement</span>
+                    <span className="font-bold text-[#4c1b87] dark:text-[#d8baff]">+₹320</span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="pointer-events-none absolute -bottom-8 -left-8 h-36 w-36 rounded-full bg-[#9754CB]/20 blur-2xl" />
             <div className="pointer-events-none absolute -right-8 -top-8 h-36 w-36 rounded-full bg-[#6437a0]/20 blur-2xl" />
           </motion.div>

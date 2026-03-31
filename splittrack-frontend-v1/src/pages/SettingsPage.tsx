@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../auth/AuthProvider'
 import { AppShell } from '../components/AppShell'
 import { useTheme } from '../theme/ThemeProvider'
 
 export function SettingsPage() {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
   const { mode, setMode } = useTheme()
   const [username, setUsername] = useState('harsh_24')
   const [muteByGroup, setMuteByGroup] = useState<Record<string, boolean>>({
@@ -67,6 +71,19 @@ export function SettingsPage() {
             className="mt-3 w-full rounded-lg bg-[#edeeef] p-3 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
           />
           {usernameError ? <p className="mt-2 text-xs font-semibold text-[#93000a]">{usernameError}</p> : null}
+        </article>
+        <article className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-[#cdc3d3]/30 dark:bg-[#232627] dark:ring-[#2d3234]">
+          <h3 className="font-semibold text-[#191c1d] dark:text-[#f0f1f2]">Session</h3>
+          <p className="mt-1 text-sm text-[#4b4451] dark:text-[#cac4cf]">Sign out from this device.</p>
+          <button
+            onClick={() => {
+              logout()
+              navigate('/login', { replace: true })
+            }}
+            className="mt-3 rounded-lg bg-[#fbe9ec] px-4 py-2 text-sm font-semibold text-[#93000a] transition hover:bg-[#f9dde2] dark:bg-[#3c1f24] dark:text-[#ffb4ab] dark:hover:bg-[#4a252b]"
+          >
+            Logout
+          </button>
         </article>
       </section>
     </AppShell>

@@ -42,7 +42,7 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
                 to={to}
                 className={({ isActive }) =>
                   [
-                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition',
+                    'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition will-change-transform hover:-translate-y-0.5',
                     isActive
                       ? 'bg-white text-[#4c1b87] shadow-sm dark:bg-[#2b2b2b] dark:text-[#d8baff]'
                       : 'text-[#4b4451] hover:bg-[#e7e8e9] dark:text-[#cac4cf] dark:hover:bg-[#232627]',
@@ -70,12 +70,12 @@ export function AppShell({ title, subtitle, children }: AppShellProps) {
               <div className="flex items-center gap-2">
                 <button
                   onClick={toggleTheme}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:-translate-y-0.5 hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]"
                   aria-label="Toggle theme"
                 >
                   {resolvedTheme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
                 </button>
-                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]">
+                <button className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] transition hover:-translate-y-0.5 hover:scale-105 dark:bg-[#232627] dark:text-[#d8baff]">
                   <UserRound size={18} />
                 </button>
               </div>
