@@ -156,17 +156,64 @@ export function SignupPage() {
 }
 
 export function OnboardingPage() {
+  const navigate = useNavigate()
+  const { accessToken } = useAuth()
+  const [username, setUsername] = useState('')
+  const [phone, setPhone] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const onFinish = async () => {
+    if (!username.trim()) {
+      setError('Username is required.')
+      return
+    }
+    if (!accessToken) {
+      setError('Session expired. Please log in again.')
+      return
+    }
+    setError('')
+    setLoading(true)
+    try {
+      const { updateMe } = await import('../auth/authApi')
+      await updateMe(accessToken, { name: username.trim() })
+      navigate('/dashboard', { replace: true })
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to save profile.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="grid min-h-screen place-items-center bg-[#f8f9fa] px-4 dark:bg-[#191c1d]">
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-[0px_24px_48px_rgba(40,16,78,0.08)] dark:bg-[#232627]">
         <h1 className="font-[Manrope] text-3xl font-extrabold tracking-tight text-[#4c1b87] dark:text-[#d8baff]">One-step setup</h1>
         <p className="mt-1 text-sm text-[#4b4451] dark:text-[#cac4cf]">Pick username and phone (optional).</p>
         <div className="mt-6 space-y-3">
-          <input className="w-full rounded-lg bg-[#edeeef] p-3 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]" placeholder="Username" />
-          <input className="w-full rounded-lg bg-[#edeeef] p-3 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]" placeholder="Phone (optional)" />
-          <Link to="/dashboard" className="block w-full rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] py-3 text-center text-sm font-bold text-white transition hover:scale-[1.01]">
-            Finish
-          </Link>
+          <input
+            className="w-full rounded-lg bg-[#edeeef] p-3 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
+            placeholder="Username"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            minLength={2}
+            maxLength={120}
+            required
+          />
+          <input
+            className="w-full rounded-lg bg-[#edeeef] p-3 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
+            placeholder="Phone (optional)"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+          />
+          {error ? <p className="text-xs font-semibold text-[#93000a]">{error}</p> : null}
+          <button
+            onClick={() => void onFinish()}
+            disabled={loading}
+            className="block w-full rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] py-3 text-center text-sm font-bold text-white transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {loading ? 'Saving...' : 'Finish'}
+          </button>
         </div>
       </div>
     </div>

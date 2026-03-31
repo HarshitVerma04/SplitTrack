@@ -1,11 +1,12 @@
 import type { AuthResponse, AuthUser } from './types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080/api/v1'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const hasBody = init.body !== undefined && init.body !== null
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
-      'Content-Type': 'application/json',
+      ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
       ...(init.headers ?? {}),
     },
     ...init,
@@ -54,5 +55,15 @@ export async function me(accessToken: string): Promise<AuthUser> {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
+  })
+}
+
+export async function updateMe(accessToken: string, payload: { name: string }): Promise<AuthUser> {
+  return request<AuthUser>('/auth/me', {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
   })
 }

@@ -33,8 +33,13 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const media = window.matchMedia('(prefers-color-scheme: dark)')
     const onChange = () => setSystemTheme(media.matches ? 'dark' : 'light')
-    media.addEventListener('change', onChange)
-    return () => media.removeEventListener('change', onChange)
+    if (typeof media.addEventListener === 'function') {
+      media.addEventListener('change', onChange)
+      return () => media.removeEventListener('change', onChange)
+    }
+
+    media.addListener(onChange)
+    return () => media.removeListener(onChange)
   }, [])
 
   const resolvedTheme = mode === 'system' ? systemTheme : mode
@@ -44,7 +49,10 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   }, [mode])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', resolvedTheme === 'dark')
+    const root = document.documentElement
+    root.classList.toggle('dark', resolvedTheme === 'dark')
+    root.dataset.theme = resolvedTheme
+    root.style.colorScheme = resolvedTheme
   }, [resolvedTheme])
 
   const value = useMemo<ThemeContextType>(

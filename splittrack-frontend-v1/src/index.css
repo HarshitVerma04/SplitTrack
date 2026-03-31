@@ -1,9 +1,70 @@
 @import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap');
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --ui-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ui-fast: 180ms;
+
+  /* Brand */
+  --brand-primary: #4c1b87;
+  --brand-secondary: #6437a0;
+  --brand-accent: #9754CB;
+  --brand-muted: #eddcff;
+  --brand-text: #d8baff;
+
+  /* Surfaces */
+  --surface-page: #f8f9fa;
+  --surface-card: #ffffff;
+  --surface-elevated: #f3f4f5;
+  --surface-input: #edeeef;
+  --surface-overlay: rgba(0, 0, 0, 0.45);
+
+  /* Text */
+  --text-primary: #191c1d;
+  --text-secondary: #4b4451;
+  --text-muted: #cac4cf;
+  --text-on-brand: #ffffff;
+
+  /* Borders */
+  --border-default: rgba(205, 195, 211, 0.4);
+  --border-ring: rgba(205, 195, 211, 0.3);
+
+  /* Semantics */
+  --success: #15803d;
+  --success-text: #15803d;
+  --danger: #b42318;
+  --danger-text: #93000a;
+  --danger-bg: #fbe9ec;
+  --danger-bg-subtle: #fff4f4;
+}
+
+html.dark {
+  color-scheme: dark;
+
+  --brand-primary: #d8baff;
+  --brand-secondary: #6437a0;
+
+  --surface-page: #1b2028;
+  --surface-card: #242b35;
+  --surface-elevated: #202631;
+  --surface-input: #1e1e1e;
+
+  --text-primary: #eef1f4;
+  --text-secondary: #cac4cf;
+  --text-muted: #cac4cf;
+
+  --border-default: #2d3440;
+  --border-ring: #384150;
+
+  --success: #4ade80;
+  --success-text: #4ade80;
+  --danger: #f87171;
+  --danger-text: #ffb4ab;
+  --danger-bg: #3c1f24;
+  --danger-bg-subtle: #3b2222;
 }
 
 html,
@@ -18,7 +79,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   font-family: Inter, sans-serif;
-  background: #f8f9fa;
+  background: var(--surface-page);
 }
 
 a,
@@ -68,3 +129,4 @@ button:active {
     scroll-behavior: auto !important;
   }
 }
+

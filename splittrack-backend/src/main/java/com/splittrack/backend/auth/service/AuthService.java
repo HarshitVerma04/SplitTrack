@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 public class AuthService {
 
@@ -51,7 +53,8 @@ public class AuthService {
                 .role(Role.ROLE_MEMBER)
                 .build();
 
-        User savedUser = userRepository.save(user);
+        User savedUser = userRepository.saveAndFlush(user);
+        Objects.requireNonNull(savedUser.getId(), "Generated user id is required before issuing tokens");
         return issueTokens(savedUser);
     }
 
@@ -79,11 +82,26 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthUserResponse me() {
+        User user = currentUser();
+        return toUserResponse(user);
+    }
+
+    @Transactional
+    public AuthUserResponse updateMe(UpdateProfileRequest request) {
+        User current = currentUser();
+        User user = userRepository.findById(current.getId())
+                .orElseThrow(() -> new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated"));
+        user.setName(request.name().trim());
+        User saved = userRepository.save(user);
+        return toUserResponse(saved);
+    }
+
+    private User currentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof User user)) {
             throw new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated");
         }
-        return toUserResponse(user);
+        return user;
     }
 
     private AuthResponse issueTokens(User user) {

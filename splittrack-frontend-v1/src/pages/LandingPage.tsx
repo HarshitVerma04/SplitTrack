@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion'
+import { Moon, Sun } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { useTheme } from '../theme/ThemeProvider'
 
 const featureCards = [
   {
@@ -35,14 +38,31 @@ const faqs = [
 ]
 
 export function LandingPage() {
+  usePageTitle('Split Expenses, Not Friendships')
+  const { resolvedTheme, toggleTheme } = useTheme()
+
   return (
-    <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d] dark:bg-[#191c1d] dark:text-[#f0f1f2]">
-      <header className="sticky top-0 z-30 border-b border-[#cdc3d3]/30 bg-white/85 backdrop-blur dark:border-[#232627] dark:bg-[#191c1d]/90">
+    <div className="min-h-screen bg-[#f8f9fa] text-[#191c1d] dark:bg-[#1b2028] dark:text-[#eef1f4]">
+      <header className="sticky top-0 z-30 border-b border-[#cdc3d3]/30 bg-white/85 backdrop-blur dark:border-[#2d3440] dark:bg-[#1b2028]/90">
         <nav className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 py-4 md:px-6">
           <h1 className="font-[Manrope] text-2xl font-black tracking-tight text-[#4c1b87] dark:text-[#d8baff]">SplitTrack</h1>
+          <button
+            onClick={toggleTheme}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] hover:-translate-y-0.5 md:hidden dark:bg-[#2a3039] dark:text-[#d8baff]"
+            aria-label="Toggle theme"
+          >
+            {resolvedTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <div className="hidden items-center gap-6 md:flex">
             <a href="#features" className="text-sm font-semibold text-[#4b4451] hover:text-[#4c1b87] dark:text-[#cac4cf] dark:hover:text-[#d8baff]">Features</a>
             <a href="#faq" className="text-sm font-semibold text-[#4b4451] hover:text-[#4c1b87] dark:text-[#cac4cf] dark:hover:text-[#d8baff]">FAQ</a>
+            <button
+              onClick={toggleTheme}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#f3f4f5] text-[#4c1b87] hover:-translate-y-0.5 dark:bg-[#2a3039] dark:text-[#d8baff]"
+              aria-label="Toggle theme"
+            >
+              {resolvedTheme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
             <Link to="/login" className="rounded-full bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-5 py-2 text-sm font-bold text-white transition hover:scale-[1.03]">Login</Link>
           </div>
         </nav>
@@ -66,7 +86,7 @@ export function LandingPage() {
               <Link to="/signup" className="rounded-xl bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-6 py-3 text-sm font-bold text-white transition hover:scale-[1.02]">
                 Get Started
               </Link>
-              <Link to="/dashboard" className="rounded-xl bg-[#e7e8e9] px-6 py-3 text-sm font-bold text-[#4c1b87] transition hover:bg-[#e1e3e4] dark:bg-[#2b2b2b] dark:text-[#d8baff]">
+              <Link to="/demo" className="rounded-xl bg-[#e7e8e9] px-6 py-3 text-sm font-bold text-[#4c1b87] transition hover:bg-[#e1e3e4] dark:bg-[#2a3039] dark:text-[#d8baff]">
                 Explore Demo
               </Link>
             </div>
@@ -99,7 +119,7 @@ export function LandingPage() {
               <div className="mt-3 rounded-lg bg-white p-3 shadow-sm ring-1 ring-[#e3d2f7] transition-transform hover:scale-[1.01] dark:bg-[#2f2738] dark:ring-[#453a52]">
                 <div className="mb-2 flex items-center justify-between text-xs font-semibold text-[#4b4451] dark:text-[#cac4cf]">
                   <span>Recent activity</span>
-                  <span className="text-[#4c1b87] dark:text-[#d8baff]">View all</span>
+                  <span className="text-[#4c1b87] dark:text-[#d8baff]">View All</span>
                 </div>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center justify-between rounded-md bg-[#f7f0ff] px-2 py-1.5 dark:bg-[#3a2f47]">

@@ -20,6 +20,13 @@ SplitTrack is a full-stack expense sharing application workspace with a Spring B
 - PostgreSQL JDBC 42.7.10
 - Flyway migrations
 
+### Java Version Policy (Important)
+
+- This workspace is pinned to Java 23 only for development in VS Code.
+- Workspace setting file: `.vscode/settings.json`
+- Configured JDK path: `C:\Program Files\Java\jdk-23`
+- If you still see Java 25 warnings in VS Code, run `Java: Clean Java Language Server Workspace` and reload the window.
+
 ### Frontend
 
 - Node.js 20+ recommended
@@ -94,11 +101,16 @@ npm install
 
 Frontend defaults to:
 
-- `http://localhost:8080/api/v1`
+- `/api/v1` (proxied by Vite to backend)
+
+Vite proxy target defaults to:
+
+- `http://localhost:8080`
 
 To override, set:
 
 - `VITE_API_BASE_URL`
+- `VITE_API_PROXY_TARGET` (for local dev proxy target)
 
 ### 3. Run Frontend
 

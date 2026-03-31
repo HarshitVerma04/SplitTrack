@@ -37,6 +37,15 @@ function App() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/landing" element={<LandingPage />} />
+        <Route path="/demo" element={<DashboardPage mode="demo" />} />
+        <Route path="/demo/group-ledger" element={<GroupLedgerPage mode="demo" />} />
+        <Route path="/demo/notifications" element={<NotificationsPage mode="demo" />} />
+        <Route path="/demo/settlements" element={<SettlementsPage mode="demo" />} />
+        <Route path="/demo/one-on-one" element={<OneOnOnePage mode="demo" />} />
+        <Route path="/demo/analytics-deep" element={<AnalyticsDeepPage mode="demo" />} />
+        <Route path="/demo/exports" element={<ExportsPage mode="demo" />} />
+        <Route path="/demo/expense-detail" element={<ExpenseDetailPage mode="demo" />} />
+        <Route path="/demo/settings" element={<SettingsPage mode="demo" />} />
         <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
         <Route path="/group-ledger" element={<RequireAuth><GroupLedgerPage /></RequireAuth>} />
         <Route path="/add-expense" element={<RequireAuth><AddExpensePage /></RequireAuth>} />
