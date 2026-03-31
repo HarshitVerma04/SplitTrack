@@ -11,3 +11,6 @@
 # Ignore backend generated/build files
 /splittrack-backend/target/
 /splittrack-backend/.idea/
+
+# Ignore Java upgrade workflow artifacts
+/splittrack-backend/.github/java-upgrade/
