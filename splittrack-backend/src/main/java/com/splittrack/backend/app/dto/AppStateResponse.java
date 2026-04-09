@@ -110,8 +110,31 @@ public record AppStateResponse(
     public record ExpenseDetail(
             String id,
             String title,
+            String category,
             String summary,
+            String payer,
+            String totalAmount,
+            String yourShare,
+            String splitType,
+            String createdAt,
+            List<ExpenseParticipant> participants,
+            List<ExpenseInsight> insights,
             List<ExpenseComment> comments
+    ) {
+    }
+
+    public record ExpenseParticipant(
+            String id,
+            String name,
+            String amount,
+            String sharePercent,
+            String role
+    ) {
+    }
+
+    public record ExpenseInsight(
+            String label,
+            String value
     ) {
     }
 

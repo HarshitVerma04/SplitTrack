@@ -74,10 +74,10 @@ export function SettlementsPage({ mode = 'live' }: SettlementsPageProps) {
     }
   }
 
-  async function updateStatus(id: string, status: 'ACCEPTED' | 'REJECTED') {
+  async function updateStatus(id: string, status: 'ACCEPTED' | 'REJECTED', amount?: number) {
     if (!accessToken) return
     try {
-      await updateSettlementStatus(accessToken, id, status)
+      await updateSettlementStatus(accessToken, id, status, amount)
       showToast(`Settlement ${status.toLowerCase()}.`, 'success')
       refetch()
     } catch (err) {
@@ -157,7 +157,7 @@ export function SettlementsPage({ mode = 'live' }: SettlementsPageProps) {
               <input
                 type="number"
                 value={item.partialAmount}
-                disabled={item.status === 'Accepted'}
+                disabled={isAccepted}
                 onChange={(event) => {
                   const value = Number(event.target.value) || 0
                   setSettlements((prev) =>
@@ -169,7 +169,7 @@ export function SettlementsPage({ mode = 'live' }: SettlementsPageProps) {
                 className="mt-1 w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 disabled:opacity-60 dark:bg-[#1e1e1e]"
               />
             </label>
-            {invalid && item.status !== 'Accepted' ? (
+            {invalid && !isAccepted ? (
               <p className="mt-2 text-xs font-semibold text-[#93000a]">Enter a value between ₹1 and the suggested amount.</p>
             ) : null}
             <div className="mt-4 flex items-center justify-between">
@@ -179,7 +179,7 @@ export function SettlementsPage({ mode = 'live' }: SettlementsPageProps) {
               <div className="flex gap-2">
                 <button
                   disabled={isAccepted || invalid}
-                  onClick={() => void updateStatus(item.id, 'ACCEPTED')}
+                  onClick={() => void updateStatus(item.id, 'ACCEPTED', item.partialAmount)}
                   className="rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-4 py-2 text-sm font-bold text-white transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Accept

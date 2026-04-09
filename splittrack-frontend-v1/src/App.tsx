@@ -39,6 +39,7 @@ function App() {
         <Route path="/landing" element={<LandingPage />} />
         <Route path="/demo" element={<DashboardPage mode="demo" />} />
         <Route path="/demo/group-ledger" element={<GroupLedgerPage mode="demo" />} />
+        <Route path="/demo/add-expense" element={<AddExpensePage mode="demo" />} />
         <Route path="/demo/notifications" element={<NotificationsPage mode="demo" />} />
         <Route path="/demo/settlements" element={<SettlementsPage mode="demo" />} />
         <Route path="/demo/one-on-one" element={<OneOnOnePage mode="demo" />} />

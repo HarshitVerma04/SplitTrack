@@ -139,7 +139,24 @@ export type AppState = {
     expense: {
       id: string
       title: string
+      category?: string
       summary: string
+      payer?: string
+      totalAmount?: string
+      yourShare?: string
+      splitType?: string
+      createdAt?: string
+      participants?: Array<{
+        id: string
+        name: string
+        amount: string
+        sharePercent: string
+        role: string
+      }>
+      insights?: Array<{
+        label: string
+        value: string
+      }>
       comments: Array<{
         id: string
         message: string
@@ -270,10 +287,11 @@ export async function updateSettlementStatus(
   accessToken: string,
   settlementId: string,
   status: 'ACCEPTED' | 'REJECTED' | 'PENDING',
+  amount?: number,
 ): Promise<void> {
   await requestWithAuth(`/settlements/${settlementId}/status`, accessToken, {
     method: 'PATCH',
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(amount !== undefined ? { status, amount } : { status }),
   })
 }
 

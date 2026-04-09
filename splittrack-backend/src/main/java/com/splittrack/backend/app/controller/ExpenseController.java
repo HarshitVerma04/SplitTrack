@@ -4,13 +4,12 @@ import com.splittrack.backend.app.dto.CreateExpenseRequest;
 import com.splittrack.backend.app.dto.ExpenseSummaryResponse;
 import com.splittrack.backend.app.dto.UpdateExpenseRequest;
 import com.splittrack.backend.app.service.AppCommandService;
-import com.splittrack.backend.auth.entity.User;
-import com.splittrack.backend.common.exception.AppException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import static com.splittrack.backend.common.security.SecurityUtils.currentUser;
 
 @RestController
 @RequestMapping("/api/v1/expenses")
@@ -39,13 +38,5 @@ public class ExpenseController {
     public ResponseEntity<Void> delete(@PathVariable java.util.UUID expenseId) {
         appCommandService.deleteExpense(currentUser(), expenseId);
         return ResponseEntity.noContent().build();
-    }
-
-    private User currentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof User user)) {
-            throw new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
-        return user;
     }
 }

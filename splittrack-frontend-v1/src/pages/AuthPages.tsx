@@ -4,6 +4,7 @@ import type { FormEvent, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider'
+import { updateMe } from '../auth/authApi'
 
 function AuthLayout({
   title,
@@ -175,7 +176,6 @@ export function OnboardingPage() {
     setError('')
     setLoading(true)
     try {
-      const { updateMe } = await import('../auth/authApi')
       await updateMe(accessToken, { name: username.trim() })
       navigate('/dashboard', { replace: true })
     } catch (e) {

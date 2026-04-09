@@ -1,10 +1,11 @@
-import { Bell, ChartNoAxesColumn, FileDown, HandCoins, House, Menu, Moon, ReceiptText, Settings, Sun, UserRound, Users, X } from 'lucide-react'
+import { Bell, ChartNoAxesColumn, FileDown, HandCoins, House, Menu, Moon, Plus, ReceiptText, Settings, Sun, UserRound, Users, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState, type PropsWithChildren } from 'react'
 import { useAuth } from '../auth/AuthProvider'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { useTheme } from '../theme/ThemeProvider'
+import { getDisplayName } from '../utils/userDisplay'
 
 type AppShellProps = PropsWithChildren<{
   title: string
@@ -15,6 +16,8 @@ type AppShellProps = PropsWithChildren<{
 const navItems = [
   { liveTo: '/dashboard', demoTo: '/demo', label: 'Dashboard', icon: House },
   { liveTo: '/group-ledger', demoTo: '/demo/group-ledger', label: 'Groups', icon: Users },
+  { liveTo: '/add-expense', demoTo: '/demo/add-expense', label: 'Add Expense', icon: Plus },
+  { liveTo: '/one-on-one', demoTo: '/demo/one-on-one', label: '1-on-1', icon: UserRound },
   { liveTo: '/notifications', demoTo: '/demo/notifications', label: 'Notifications', icon: Bell },
   { liveTo: '/settlements', demoTo: '/demo/settlements', label: 'Settlements', icon: HandCoins },
   { liveTo: '/analytics-deep', demoTo: '/demo/analytics-deep', label: 'Analytics', icon: ChartNoAxesColumn },
@@ -44,12 +47,8 @@ export function AppShell({ title, subtitle, mode = 'live', children }: AppShellP
     return () => document.removeEventListener('mousedown', onDocumentClick)
   }, [])
 
-  // Close mobile nav on route change
-  useEffect(() => {
-    setMobileNavOpen(false)
-  }, [title])
-
-  const userInitial = user?.name?.charAt(0)?.toUpperCase() ?? 'U'
+  const displayName = getDisplayName(user ?? {})
+  const userInitial = displayName.charAt(0).toUpperCase()
   const isDemo = mode === 'demo'
 
   return (
@@ -189,6 +188,10 @@ export function AppShell({ title, subtitle, mode = 'live', children }: AppShellP
                     <div className="absolute right-0 z-50 mt-2 w-44 rounded-xl bg-white p-1.5 shadow-lg ring-1 ring-[#cdc3d3]/50 dark:bg-[#242b35] dark:ring-[#384150]">
                       {isAuthenticated ? (
                         <>
+                          <div className="px-3 py-2">
+                            <p className="truncate text-xs font-semibold text-[#1f2328] dark:text-[#eef1f4]">{displayName}</p>
+                            {user?.email ? <p className="truncate text-[11px] text-[#63707e] dark:text-[#9ea5af]">{user.email}</p> : null}
+                          </div>
                           <button
                             onClick={() => {
                               setMenuOpen(false)

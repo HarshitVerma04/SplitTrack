@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { CalendarDays, ChevronRight, Filter, Plus, Tags, UsersRound } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { addGroupMembers, createGroup, deleteGroup, getGroups, getUsers, removeGroupMember, type GroupSummary, type UserDirectoryItem } from '../api/appApi'
 import { useLiveAppState } from '../api/useLiveAppState'
 import { useAuth } from '../auth/AuthProvider'
 import { AppShell } from '../components/AppShell'
+import { fuzzyFindUserByNameOrEmail, getDisplayName, isLikelyPlaceholderUser } from '../utils/userDisplay'
 import { useToast } from '../ui/ToastProvider'
 
 type PageMode = 'live' | 'demo'
@@ -36,6 +38,7 @@ const demoLedgerDays = [
 ]
 
 export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
+  const navigate = useNavigate()
   const isDemo = mode === 'demo'
   const { showToast } = useToast()
   const { accessToken } = useAuth()
@@ -45,15 +48,59 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
   const [memberIds, setMemberIds] = useState<string[]>([])
   const [users, setUsers] = useState<UserDirectoryItem[]>([])
   const [groups, setGroups] = useState<GroupSummary[]>([])
+  const [memberNameInput, setMemberNameInput] = useState('')
   const [deleteGroupId, setDeleteGroupId] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showAddMemberModal, setShowAddMemberModal] = useState(false)
   const [targetGroupId, setTargetGroupId] = useState('')
   const [newMemberIds, setNewMemberIds] = useState<string[]>([])
+  const [newMemberNameInput, setNewMemberNameInput] = useState('')
   const [isAddingMembers, setIsAddingMembers] = useState(false)
   const [memberToRemoveId, setMemberToRemoveId] = useState('')
   const [isRemovingMember, setIsRemovingMember] = useState(false)
+
+  const availableUsers = useMemo(() => {
+    return users
+      .filter((row) => !isLikelyPlaceholderUser(row))
+      .sort((left, right) => getDisplayName(left).localeCompare(getDisplayName(right)))
+  }, [users])
+
+  const directoryNameOptions = useMemo(() => {
+    return availableUsers.map((row) => getDisplayName(row))
+  }, [availableUsers])
+
+  function addCreateMemberByName() {
+    const result = fuzzyFindUserByNameOrEmail(availableUsers, memberNameInput)
+    const resolved = result.match
+    if (!resolved) {
+      const hint = result.suggestions.length > 0 ? ` Closest matches: ${result.suggestions.join(', ')}` : ''
+      showToast(`No matching real user found.${hint}`, 'error')
+      return
+    }
+    if (memberIds.includes(resolved.id)) {
+      showToast('Member already selected.', 'info')
+      return
+    }
+    setMemberIds((prev) => [...prev, resolved.id])
+    setMemberNameInput('')
+  }
+
+  function addModalMemberByName() {
+    const result = fuzzyFindUserByNameOrEmail(availableUsers, newMemberNameInput)
+    const resolved = result.match
+    if (!resolved) {
+      const hint = result.suggestions.length > 0 ? ` Closest matches: ${result.suggestions.join(', ')}` : ''
+      showToast(`No matching real user found.${hint}`, 'error')
+      return
+    }
+    if (newMemberIds.includes(resolved.id)) {
+      showToast('Member already selected.', 'info')
+      return
+    }
+    setNewMemberIds((prev) => [...prev, resolved.id])
+    setNewMemberNameInput('')
+  }
 
   useEffect(() => {
     if (isDemo || !accessToken) return
@@ -210,8 +257,30 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
             />
           </div>
           {users.length > 0 ? (
-            <div className="mt-3 grid gap-2 md:grid-cols-2">
-              {users.map((user) => (
+            <>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <input
+                  value={memberNameInput}
+                  onChange={(event) => setMemberNameInput(event.target.value)}
+                  placeholder="Type member name (or email)"
+                  list="create-group-member-options"
+                  className="min-w-64 flex-1 rounded-lg bg-[#edeeef] px-3 py-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
+                />
+                <datalist id="create-group-member-options">
+                  {directoryNameOptions.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+                <button
+                  type="button"
+                  onClick={addCreateMemberByName}
+                  className="rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-4 py-2 text-xs font-bold text-white"
+                >
+                  Add By Name
+                </button>
+              </div>
+              <div className="mt-3 grid gap-2 md:grid-cols-2">
+                {availableUsers.map((user) => (
                 <label key={user.id} className="flex items-center gap-2 rounded-lg bg-[#f3f4f5] px-3 py-2 text-sm dark:bg-[#1e1e1e]">
                   <input
                     type="checkbox"
@@ -223,10 +292,11 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
                     }}
                     className="accent-[#4c1b87]"
                   />
-                  <span>{user.name}</span>
+                  <span>{getDisplayName(user)}</span>
                 </label>
               ))}
-            </div>
+              </div>
+            </>
           ) : null}
           <button
             onClick={() => void onCreateGroup()}
@@ -374,7 +444,7 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
               showToast('This action is available after login.', 'info')
               return
             }
-            window.location.href = '/add-expense'
+            navigate('/add-expense')
           }}
           className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-5 py-3 text-sm font-bold text-white transition hover:scale-[1.02]"
         >          <Plus size={16} /> Add Expense
@@ -400,7 +470,28 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
               </select>
 
               <div className="max-h-52 space-y-2 overflow-auto rounded-lg bg-[#f3f4f5] p-2 dark:bg-[#1e1e1e]">
-                {users.map((member) => (
+                <div className="mb-2 flex flex-wrap gap-2">
+                  <input
+                    value={newMemberNameInput}
+                    onChange={(event) => setNewMemberNameInput(event.target.value)}
+                    placeholder="Type member name (or email)"
+                    list="add-member-modal-options"
+                    className="min-w-64 flex-1 rounded-lg bg-white px-3 py-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#232627]"
+                  />
+                  <datalist id="add-member-modal-options">
+                    {directoryNameOptions.map((name) => (
+                      <option key={`modal-${name}`} value={name} />
+                    ))}
+                  </datalist>
+                  <button
+                    type="button"
+                    onClick={addModalMemberByName}
+                    className="rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-3 py-2 text-xs font-bold text-white"
+                  >
+                    Add By Name
+                  </button>
+                </div>
+                {availableUsers.map((member) => (
                   <label key={member.id} className="flex items-center gap-2 rounded-md px-2 py-1 text-sm hover:bg-[#eceef0] dark:hover:bg-[#2a2f31]">
                     <input
                       type="checkbox"
@@ -412,7 +503,7 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
                       }}
                       className="accent-[#4c1b87]"
                     />
-                    <span>{member.name}</span>
+                    <span>{getDisplayName(member)}</span>
                   </label>
                 ))}
               </div>
@@ -426,8 +517,8 @@ export function GroupLedgerPage({ mode = 'live' }: GroupLedgerPageProps) {
                     className="min-w-56 rounded-lg bg-[#edeeef] px-3 py-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
                   >
                     <option value="">Select member</option>
-                    {users.map((member) => (
-                      <option key={member.id} value={member.id}>{member.name}</option>
+                    {availableUsers.map((member) => (
+                      <option key={member.id} value={member.id}>{getDisplayName(member)}</option>
                     ))}
                   </select>
                   <button

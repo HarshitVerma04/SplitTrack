@@ -386,7 +386,7 @@ public class AppCommandService {
         }
 
         @Transactional
-        public SettlementSummaryResponse updateSettlementStatus(User currentUser, UUID settlementId, String status) {
+        public SettlementSummaryResponse updateSettlementStatus(User currentUser, UUID settlementId, String status, BigDecimal amount) {
                 SettlementRequest settlement = settlementRequestRepository
                                 .findByIdAndFromUserIdOrIdAndToUserId(settlementId, currentUser.getId(), settlementId, currentUser.getId())
                                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Settlement not found or inaccessible"));
@@ -396,6 +396,20 @@ public class AppCommandService {
                         nextStatus = SettlementStatus.valueOf(status.trim().toUpperCase());
                 } catch (IllegalArgumentException ex) {
                         throw new AppException(HttpStatus.BAD_REQUEST, "Invalid settlement status");
+                }
+
+                if (nextStatus == SettlementStatus.ACCEPTED) {
+                        BigDecimal acceptedAmount = amount == null
+                                        ? settlement.getAmount()
+                                        : amount.setScale(2, RoundingMode.HALF_UP);
+
+                        if (acceptedAmount.compareTo(settlement.getAmount()) > 0) {
+                                throw new AppException(HttpStatus.BAD_REQUEST, "Accepted amount cannot exceed requested amount");
+                        }
+
+                        settlement.setAmount(acceptedAmount);
+                } else if (amount != null) {
+                        throw new AppException(HttpStatus.BAD_REQUEST, "Amount is only supported when accepting a settlement");
                 }
 
                 settlement.setStatus(nextStatus);

@@ -5,7 +5,7 @@ import { getAppState, type AppState } from './appApi'
 type PageMode = 'live' | 'demo'
 
 export function useLiveAppState(mode: PageMode) {
-  const { accessToken } = useAuth()
+  const { accessToken, isLoading: isAuthLoading } = useAuth()
   const [appState, setAppState] = useState<AppState | null>(null)
   const [isLoading, setIsLoading] = useState(mode === 'live')
   const [error, setError] = useState<string | null>(null)
@@ -16,6 +16,12 @@ export function useLiveAppState(mode: PageMode) {
       setIsLoading(false)
       setError(null)
       setAppState(null)
+      return
+    }
+
+    if (isAuthLoading) {
+      setIsLoading(true)
+      setError(null)
       return
     }
 
@@ -54,7 +60,7 @@ export function useLiveAppState(mode: PageMode) {
     return () => {
       cancelled = true
     }
-  }, [mode, accessToken, refreshTick])
+  }, [mode, accessToken, isAuthLoading, refreshTick])
 
   return {
     appState,

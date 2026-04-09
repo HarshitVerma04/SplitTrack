@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 public class AppStateService {
 
     private static final DateTimeFormatter LEDGER_DATE_FORMAT = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DETAIL_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM dd, yyyy");
 
     private final GroupRepository groupRepository;
     private final ExpenseRepository expenseRepository;
@@ -48,6 +49,13 @@ public class AppStateService {
         List<Expense> expenses = expenseRepository.findDistinctByGroupMembersUserIdOrderByCreatedAtDesc(currentUserId);
         List<SettlementRequest> settlements = settlementRequestRepository
                 .findTop10ByFromUserIdOrToUserIdOrderByCreatedAtDesc(currentUserId, currentUserId);
+        List<SettlementRequest> acceptedSettlements = settlementRequestRepository
+            .findByStatusAndFromUserIdOrStatusAndToUserId(
+                SettlementStatus.ACCEPTED,
+                currentUserId,
+                SettlementStatus.ACCEPTED,
+                currentUserId
+            );
 
         BigDecimal totalOwed = BigDecimal.ZERO;
         BigDecimal totalYouOwe = BigDecimal.ZERO;
@@ -66,6 +74,17 @@ public class AppStateService {
                 groupBalance.merge(expense.getGroup().getId(), yourShare.negate(), BigDecimal::add);
             }
         }
+
+        for (SettlementRequest settlement : acceptedSettlements) {
+            if (settlement.getToUser().getId().equals(currentUserId)) {
+                totalOwed = totalOwed.subtract(settlement.getAmount());
+            } else if (settlement.getFromUser().getId().equals(currentUserId)) {
+                totalYouOwe = totalYouOwe.subtract(settlement.getAmount());
+            }
+        }
+
+        totalOwed = totalOwed.max(BigDecimal.ZERO);
+        totalYouOwe = totalYouOwe.max(BigDecimal.ZERO);
 
         BigDecimal totalNet = totalOwed.subtract(totalYouOwe);
 
@@ -132,15 +151,25 @@ public class AppStateService {
 
         AppStateResponse.AnalyticsSection analytics = buildAnalytics(expenses, currentUserId);
 
+        Expense primaryExpense = expenses.isEmpty() ? null : expenses.getFirst();
+
         AppStateResponse.ExpenseDetailSection expenseDetail = new AppStateResponse.ExpenseDetailSection(
-                expenses.isEmpty()
+                primaryExpense == null
                         ? null
                         : new AppStateResponse.ExpenseDetail(
-                                expenses.getFirst().getId().toString(),
-                                expenses.getFirst().getTitle(),
-                                "Paid by " + expenses.getFirst().getPayer().getName()
-                                        + " • Total " + formatCurrency(expenses.getFirst().getTotalAmount())
-                                        + " • Split " + splitTypeLabel(expenses.getFirst()),
+                                primaryExpense.getId().toString(),
+                                primaryExpense.getTitle(),
+                                primaryExpense.getCategory(),
+                                "Paid by " + primaryExpense.getPayer().getName()
+                                        + " • Total " + formatCurrency(primaryExpense.getTotalAmount())
+                                        + " • Split " + splitTypeLabel(primaryExpense),
+                                primaryExpense.getPayer().getName(),
+                                formatCurrency(primaryExpense.getTotalAmount()),
+                                formatCurrency(userShare(primaryExpense, currentUserId)),
+                                splitTypeLabel(primaryExpense),
+                                primaryExpense.getCreatedAt().toLocalDate().format(DETAIL_DATE_FORMAT),
+                                buildExpenseParticipants(primaryExpense, currentUserId),
+                                buildExpenseInsights(primaryExpense, currentUserId),
                                 List.of()
                         )
         );
@@ -194,6 +223,33 @@ public class AppStateService {
                 if (!payerId.equals(currentUserId) && splitUserId.equals(currentUserId)) {
                     memberBalances.merge(payerId, split.getAmount().negate(), BigDecimal::add);
                 }
+            }
+        }
+
+        Set<UUID> groupCounterpartyIds = group.getMembers().stream()
+                .map(GroupMember::getUser)
+                .map(User::getId)
+                .filter(id -> !id.equals(currentUserId))
+                .collect(Collectors.toSet());
+
+        List<SettlementRequest> acceptedSettlements = settlementRequestRepository
+                .findByStatusAndFromUserIdOrStatusAndToUserId(
+                        SettlementStatus.ACCEPTED,
+                        currentUserId,
+                        SettlementStatus.ACCEPTED,
+                        currentUserId
+                );
+
+        for (SettlementRequest settlement : acceptedSettlements) {
+            UUID fromUserId = settlement.getFromUser().getId();
+            UUID toUserId = settlement.getToUser().getId();
+
+            if (toUserId.equals(currentUserId) && groupCounterpartyIds.contains(fromUserId)) {
+                memberBalances.merge(fromUserId, settlement.getAmount().negate(), BigDecimal::add);
+            }
+
+            if (fromUserId.equals(currentUserId) && groupCounterpartyIds.contains(toUserId)) {
+                memberBalances.merge(toUserId, settlement.getAmount(), BigDecimal::add);
             }
         }
 
@@ -281,6 +337,47 @@ public class AppStateService {
         ));
     }
 
+    private List<AppStateResponse.ExpenseParticipant> buildExpenseParticipants(Expense expense, UUID currentUserId) {
+        BigDecimal total = expense.getTotalAmount();
+
+        return expense.getSplits().stream()
+                .map(split -> {
+                    UUID userId = split.getUser().getId();
+                    String role;
+                    if (userId.equals(currentUserId)) {
+                        role = "YOU";
+                    } else if (userId.equals(expense.getPayer().getId())) {
+                        role = "PAYER";
+                    } else {
+                        role = "MEMBER";
+                    }
+
+                    return new AppStateResponse.ExpenseParticipant(
+                            userId.toString(),
+                            split.getUser().getName(),
+                            formatCurrency(split.getAmount()),
+                            formatPercent(split.getAmount(), total),
+                            role
+                    );
+                })
+                .toList();
+    }
+
+    private List<AppStateResponse.ExpenseInsight> buildExpenseInsights(Expense expense, UUID currentUserId) {
+        BigDecimal total = expense.getTotalAmount();
+        BigDecimal yourShare = userShare(expense, currentUserId);
+
+        return List.of(
+                new AppStateResponse.ExpenseInsight("Split Members", String.valueOf(expense.getSplits().size())),
+                new AppStateResponse.ExpenseInsight("Your Percentage", formatPercent(yourShare, total)),
+                new AppStateResponse.ExpenseInsight(
+                        "Payer Status",
+                        expense.getPayer().getId().equals(currentUserId) ? "You paid" : expense.getPayer().getName() + " paid"
+                ),
+                new AppStateResponse.ExpenseInsight("Category", expense.getCategory())
+        );
+    }
+
     private AppStateResponse.ActivityItem toActivityItem(Expense expense, UUID currentUserId) {
         BigDecimal yourShare = userShare(expense, currentUserId);
         boolean payerIsCurrent = expense.getPayer().getId().equals(currentUserId);
@@ -349,11 +446,22 @@ public class AppStateService {
         return createdAt.toLocalDate().format(DateTimeFormatter.ofPattern("dd MMM"));
     }
 
-        private String splitTypeLabel(Expense expense) {
-                return expense.getSplitType() == null ? SplitType.EXACT.name() : expense.getSplitType().name();
+    private String formatPercent(BigDecimal amount, BigDecimal total) {
+        if (total.compareTo(BigDecimal.ZERO) <= 0) {
+            return "0%";
         }
 
-        private String settlementStatusLabel(SettlementRequest settlement) {
-                return settlement.getStatus() == null ? SettlementStatus.PENDING.name() : settlement.getStatus().name();
-        }
+        BigDecimal percent = amount.multiply(BigDecimal.valueOf(100))
+                .divide(total, 1, RoundingMode.HALF_UP)
+                .stripTrailingZeros();
+        return percent.toPlainString() + "%";
+    }
+
+    private String splitTypeLabel(Expense expense) {
+        return expense.getSplitType() == null ? SplitType.EXACT.name() : expense.getSplitType().name();
+    }
+
+    private String settlementStatusLabel(SettlementRequest settlement) {
+        return settlement.getStatus() == null ? SettlementStatus.PENDING.name() : settlement.getStatus().name();
+    }
 }

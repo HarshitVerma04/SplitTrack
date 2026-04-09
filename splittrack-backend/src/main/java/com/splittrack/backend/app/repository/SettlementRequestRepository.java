@@ -19,4 +19,12 @@ public interface SettlementRequestRepository extends JpaRepository<SettlementReq
 
     @EntityGraph(attributePaths = {"fromUser", "toUser"})
     Optional<SettlementRequest> findByIdAndFromUserIdOrIdAndToUserId(UUID idForFrom, UUID fromUserId, UUID idForTo, UUID toUserId);
+
+    @EntityGraph(attributePaths = {"fromUser", "toUser"})
+    List<SettlementRequest> findByStatusAndFromUserIdOrStatusAndToUserId(
+            SettlementStatus statusForFrom,
+            UUID fromUserId,
+            SettlementStatus statusForTo,
+            UUID toUserId
+    );
 }

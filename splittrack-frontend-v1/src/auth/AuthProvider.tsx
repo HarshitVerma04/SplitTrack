@@ -28,6 +28,10 @@ function persistAuth(response: AuthResponse) {
   )
 }
 
+function persistCurrentSession(payload: { accessToken: string; refreshToken: string; user: AuthUser }) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+}
+
 function readPersistedAuth(): { accessToken: string; refreshToken: string; user: AuthUser } | null {
   const raw = localStorage.getItem(STORAGE_KEY)
   if (!raw) {
@@ -74,6 +78,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const currentUser = await meRequest(persisted.accessToken)
         setUser(currentUser)
         setAccessToken(persisted.accessToken)
+        persistCurrentSession({
+          accessToken: persisted.accessToken,
+          refreshToken: persisted.refreshToken,
+          user: currentUser,
+        })
       } catch {
         try {
           const refreshed = await refreshRequest({ refreshToken: persisted.refreshToken })

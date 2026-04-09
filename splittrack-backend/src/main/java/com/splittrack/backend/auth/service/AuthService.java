@@ -10,12 +10,13 @@ import com.splittrack.backend.security.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+
+import static com.splittrack.backend.common.security.SecurityUtils.currentUser;
 
 @Service
 public class AuthService {
@@ -96,13 +97,6 @@ public class AuthService {
         return toUserResponse(saved);
     }
 
-    private User currentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof User user)) {
-            throw new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
-        return user;
-    }
 
     private AuthResponse issueTokens(User user) {
         String accessToken = jwtService.generateAccessToken(user);

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.FieldError;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,6 +42,17 @@ public class GlobalExceptionHandler {
                 "Validation failed",
                 OffsetDateTime.now(),
                 details
+        );
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleNotReadable(HttpMessageNotReadableException ex) {
+        ApiError error = new ApiError(
+                HttpStatus.BAD_REQUEST.name(),
+                "Malformed request body",
+                OffsetDateTime.now(),
+                Map.of("body", "Request JSON is invalid or contains wrong value types")
         );
         return ResponseEntity.badRequest().body(error);
     }

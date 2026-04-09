@@ -13,6 +13,6 @@ public record UpdateExpenseRequest(
         @Size(max = 80) String category,
         @DecimalMin("0.01") BigDecimal totalAmount,
         UUID payerId,
-        List<@Valid CreateExpenseRequest.ExpenseSplitInput> splits
+        @Valid List<CreateExpenseRequest.ExpenseSplitInput> splits
 ) {
 }

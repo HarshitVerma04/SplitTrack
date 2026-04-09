@@ -4,15 +4,14 @@ import com.splittrack.backend.app.dto.CreateGroupRequest;
 import com.splittrack.backend.app.dto.GroupSummaryResponse;
 import com.splittrack.backend.app.dto.AddGroupMembersRequest;
 import com.splittrack.backend.app.service.AppCommandService;
-import com.splittrack.backend.auth.entity.User;
-import com.splittrack.backend.common.exception.AppException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.splittrack.backend.common.security.SecurityUtils.currentUser;
 
 @RestController
 @RequestMapping("/api/v1/groups")
@@ -61,13 +60,5 @@ public class GroupController {
             @PathVariable java.util.UUID groupId
     ) {
         return ResponseEntity.ok(appCommandService.listGroupMembers(currentUser(), groupId));
-    }
-
-    private User currentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof User user)) {
-            throw new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated");
-        }
-        return user;
     }
 }

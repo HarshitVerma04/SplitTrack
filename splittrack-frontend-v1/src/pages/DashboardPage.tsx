@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Bolt, CircleDollarSign, HandCoins, Plus, ReceiptIndianRupee, UsersRound } from 'lucide-react'
-import { createExpense, createGroup, createSettlement, getGroups, getUsers, type GroupSummary, type UserDirectoryItem } from '../api/appApi'
+import { createExpense, createGroup, createSettlement, getGroupMembers, getGroups, getUsers, type GroupSummary, type UserDirectoryItem } from '../api/appApi'
 import { useLiveAppState } from '../api/useLiveAppState'
 import { useAuth } from '../auth/AuthProvider'
 import { AppShell } from '../components/AppShell'
+import { normalizeCategory } from '../data/expenseCategories'
+import { useExpenseCategories } from '../hooks/useExpenseCategories'
+import { fuzzyFindUserByNameOrEmail, getDisplayName, isLikelyPlaceholderUser } from '../utils/userDisplay'
 import { useToast } from '../ui/ToastProvider'
 
 type DashboardMode = 'live' | 'demo'
@@ -68,6 +71,7 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
   const { appState, isLoading, error, refetch } = useLiveAppState(mode)
   const { accessToken, user } = useAuth()
   const { showToast } = useToast()
+  const { categories: categoryOptions, addCategory } = useExpenseCategories()
 
   const [showExpenseModal, setShowExpenseModal] = useState(false)
   const [showGroupModal, setShowGroupModal] = useState(false)
@@ -79,18 +83,35 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
   const [expenseGroupId, setExpenseGroupId] = useState('')
   const [expenseTitle, setExpenseTitle] = useState('')
   const [expenseCategory, setExpenseCategory] = useState('General')
+  const [customCategory, setCustomCategory] = useState('')
   const [expenseTotal, setExpenseTotal] = useState(0)
-  const [expenseMyShare, setExpenseMyShare] = useState(0)
   const [isCreatingExpense, setIsCreatingExpense] = useState(false)
 
   const [newGroupName, setNewGroupName] = useState('')
   const [newGroupDescription, setNewGroupDescription] = useState('')
+  const [newGroupMemberNameInput, setNewGroupMemberNameInput] = useState('')
   const [newGroupMemberIds, setNewGroupMemberIds] = useState<string[]>([])
   const [isCreatingGroup, setIsCreatingGroup] = useState(false)
 
   const [settlementToUserId, setSettlementToUserId] = useState('')
   const [settlementAmount, setSettlementAmount] = useState(0)
   const [isCreatingSettlement, setIsCreatingSettlement] = useState(false)
+
+  const realMemberOptions = useMemo(() => {
+    return memberOptions
+      .filter((member) => !isLikelyPlaceholderUser(member))
+      .sort((left, right) => getDisplayName(left).localeCompare(getDisplayName(right)))
+  }, [memberOptions])
+
+  const realMemberNames = useMemo(() => {
+    return realMemberOptions.map((member) => getDisplayName(member))
+  }, [realMemberOptions])
+
+  useEffect(() => {
+    if (!categoryOptions.includes(expenseCategory)) {
+      setExpenseCategory(categoryOptions[0] ?? 'General')
+    }
+  }, [categoryOptions, expenseCategory])
 
   useEffect(() => {
     if (isDemo || !accessToken) return
@@ -102,10 +123,11 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
       try {
         const [groupsRes, usersRes] = await Promise.all([getGroups(accessToken), getUsers(accessToken)])
         if (cancelled) return
+        const realUsers = usersRes.filter((member) => !isLikelyPlaceholderUser(member))
         setGroupOptions(groupsRes)
         setMemberOptions(usersRes)
         setExpenseGroupId((current) => current || groupsRes[0]?.id || '')
-        setSettlementToUserId((current) => current || usersRes[0]?.id || '')
+        setSettlementToUserId((current) => current || realUsers[0]?.id || '')
       } catch (err) {
         if (!cancelled) {
           showToast(err instanceof Error ? err.message : 'Failed to load form options.', 'error')
@@ -128,29 +150,38 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
       showToast('Session expired. Please log in again.', 'error')
       return
     }
-    if (!expenseGroupId || !expenseTitle.trim() || expenseTotal <= 0 || expenseMyShare <= 0) {
+    if (!expenseGroupId || !expenseTitle.trim() || expenseTotal <= 0) {
       showToast('Please fill all expense details before finalizing.', 'error')
-      return
-    }
-    if (Number(expenseMyShare.toFixed(2)) !== Number(expenseTotal.toFixed(2))) {
-      showToast('For quick add, your share must equal total amount.', 'error')
       return
     }
 
     setIsCreatingExpense(true)
     try {
+      const members = await getGroupMembers(accessToken, expenseGroupId)
+      if (members.length === 0) {
+        showToast('Selected group has no members to split with.', 'error')
+        return
+      }
+
+      const totalPaise = Math.round(expenseTotal * 100)
+      const baseSplitPaise = Math.floor(totalPaise / members.length)
+      const remainderPaise = totalPaise - baseSplitPaise * members.length
+      const splits = members.map((member, index) => ({
+        userId: member.id,
+        amount: (baseSplitPaise + (index < remainderPaise ? 1 : 0)) / 100,
+      }))
+
       await createExpense(accessToken, {
         groupId: expenseGroupId,
         title: expenseTitle.trim(),
         category: expenseCategory.trim() || 'General',
         totalAmount: expenseTotal,
-        splits: [{ userId: user.id, amount: expenseMyShare }],
+        splits,
       })
       setShowExpenseModal(false)
       setExpenseTitle('')
       setExpenseCategory('General')
       setExpenseTotal(0)
-      setExpenseMyShare(0)
       showToast('Expense created.', 'success')
       refetch()
     } catch (err) {
@@ -158,6 +189,20 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
     } finally {
       setIsCreatingExpense(false)
     }
+  }
+
+  function onAddCustomCategory() {
+    const normalized = normalizeCategory(customCategory)
+    if (!normalized) {
+      showToast('Enter a category name first.', 'info')
+      return
+    }
+
+    const result = addCategory(normalized)
+
+    setExpenseCategory(normalized)
+    setCustomCategory('')
+    showToast(result.added ? 'Category added.' : 'Category already exists. Selected it for you.', 'success')
   }
 
   async function onConfirmCreateGroup() {
@@ -188,6 +233,23 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
     } finally {
       setIsCreatingGroup(false)
     }
+  }
+
+  function onAddGroupMemberByName() {
+    const result = fuzzyFindUserByNameOrEmail(realMemberOptions, newGroupMemberNameInput)
+    const resolved = result.match
+    if (!resolved) {
+      const hint = result.suggestions.length > 0 ? ` Closest matches: ${result.suggestions.join(', ')}` : ''
+      showToast(`No matching real user found.${hint}`, 'error')
+      return
+    }
+    if (newGroupMemberIds.includes(resolved.id)) {
+      showToast('Member already selected.', 'info')
+      return
+    }
+
+    setNewGroupMemberIds((prev) => [...prev, resolved.id])
+    setNewGroupMemberNameInput('')
   }
 
   async function onConfirmSettlement() {
@@ -419,12 +481,30 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
                   placeholder="Expense title"
                   className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
                 />
-                <input
+                <select
                   value={expenseCategory}
                   onChange={(event) => setExpenseCategory(event.target.value)}
-                  placeholder="Category"
                   className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
-                />
+                >
+                  {categoryOptions.map((option) => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+                <div className="flex gap-2">
+                  <input
+                    value={customCategory}
+                    onChange={(event) => setCustomCategory(event.target.value)}
+                    placeholder="Add custom category"
+                    className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
+                  />
+                  <button
+                    type="button"
+                    onClick={onAddCustomCategory}
+                    className="rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-3 py-2 text-xs font-semibold text-white transition"
+                  >
+                    Add
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 gap-3">
                   <input
                     type="number"
@@ -433,13 +513,9 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
                     placeholder="Total amount"
                     className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
                   />
-                  <input
-                    type="number"
-                    value={expenseMyShare}
-                    onChange={(event) => setExpenseMyShare(Number(event.target.value) || 0)}
-                    placeholder="Your share"
-                    className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
-                  />
+                  <div className="rounded-lg bg-[#edeeef] p-2 text-xs font-semibold text-[#4b4451] dark:bg-[#1e1e1e] dark:text-[#cac4cf]">
+                    Auto split equally among selected group members.
+                  </div>
                 </div>
               </div>
             )}
@@ -483,8 +559,29 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
                   placeholder="Description (optional)"
                   className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
                 />
+                <div className="flex gap-2">
+                  <input
+                    value={newGroupMemberNameInput}
+                    onChange={(event) => setNewGroupMemberNameInput(event.target.value)}
+                    placeholder="Type member name (or email)"
+                    list="dashboard-group-member-options"
+                    className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
+                  />
+                  <datalist id="dashboard-group-member-options">
+                    {realMemberNames.map((name) => (
+                      <option key={name} value={name} />
+                    ))}
+                  </datalist>
+                  <button
+                    type="button"
+                    onClick={onAddGroupMemberByName}
+                    className="rounded-lg bg-gradient-to-br from-[#4c1b87] to-[#6437a0] px-3 py-2 text-xs font-semibold text-white"
+                  >
+                    Add By Name
+                  </button>
+                </div>
                 <div className="max-h-40 space-y-2 overflow-auto rounded-lg bg-[#f3f4f5] p-2 dark:bg-[#1e1e1e]">
-                  {memberOptions.map((member) => (
+                  {realMemberOptions.map((member) => (
                     <label key={member.id} className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
@@ -496,7 +593,7 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
                         }}
                         className="accent-[#4c1b87]"
                       />
-                      <span>{member.name}</span>
+                      <span>{getDisplayName(member)}</span>
                     </label>
                   ))}
                 </div>
@@ -536,8 +633,8 @@ export function DashboardPage({ mode = 'live' }: DashboardPageProps) {
                   className="w-full rounded-lg bg-[#edeeef] p-2 text-sm outline-none ring-[#4c1b87]/30 focus:ring-2 dark:bg-[#1e1e1e]"
                 >
                   <option value="">Select recipient</option>
-                  {memberOptions.map((member) => (
-                    <option key={member.id} value={member.id}>{member.name}</option>
+                  {realMemberOptions.map((member) => (
+                    <option key={member.id} value={member.id}>{getDisplayName(member)}</option>
                   ))}
                 </select>
                 <input
