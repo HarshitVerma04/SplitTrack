@@ -1,8 +1,8 @@
-# SplitTrack
+# SplitItUp
 
 ## What This Is
 
-SplitTrack is a full-stack expense sharing app for small groups and 1:1 splits. Users can record expenses, split costs, and settle up, with a strong focus on correctness and consistency across profiles.
+SplitItUp is a full-stack expense sharing app for small groups and 1:1 splits. Users can record expenses, split costs, and settle up, with a strong focus on correctness and consistency across profiles.
 
 ## Core Value
 

@@ -1,7 +1,7 @@
 # Ignore original Stitch exports and temporary scaffold folders at repo root
 /stitch/
-/splittrack-ui/
-/splittrack-web/
+/splititup-ui/
+/splititup-web/
 
 # Ignore accidental root-level npm artifacts
 /node_modules/
@@ -9,8 +9,8 @@
 /package-lock.json
 
 # Ignore backend generated/build files
-/splittrack-backend/target/
-/splittrack-backend/.idea/
+/splititup-backend/target/
+/splititup-backend/.idea/
 
 # Ignore Java upgrade workflow artifacts
-/splittrack-backend/.github/java-upgrade/
+/splititup-backend/.github/java-upgrade/

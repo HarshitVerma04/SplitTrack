@@ -3,16 +3,16 @@
 ## Backend
 - Test framework: JUnit 5 with Spring Boot test support.
 - Only a basic context load test is present.
-  - `splittrack-backend/src/test/java/com/splittrack/backend/SplittrackBackendApplicationTests.java`.
+  - `splititup-backend/src/test/java/com/splititup/backend/SplitItUpBackendApplicationTests.java`.
 - Test profile is enabled via `@ActiveProfiles("test")`.
-- H2 is included as a test dependency in `splittrack-backend/pom.xml`.
+- H2 is included as a test dependency in `splititup-backend/pom.xml`.
 
 ## Frontend (primary)
-- No test framework or test scripts detected in `splittrack-frontend-v1/package.json`.
-- No `__tests__` or `*.test.*` files observed in `splittrack-frontend-v1/src`.
+- No test framework or test scripts detected in `splititup-frontend-v1/package.json`.
+- No `__tests__` or `*.test.*` files observed in `splititup-frontend-v1/src`.
 
 ## Frontend (secondary)
-- No test framework or test scripts detected in `splittrack-ui/package.json`.
+- No test framework or test scripts detected in `splititup-ui/package.json`.
 
 ## CI and automation
 - No CI workflow files found under `.github/workflows`.

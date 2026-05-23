@@ -1,0 +1,122 @@
+package com.splititup.backend.auth.service;
+
+import com.splititup.backend.auth.dto.*;
+import com.splititup.backend.auth.entity.RefreshToken;
+import com.splititup.backend.auth.entity.Role;
+import com.splititup.backend.auth.entity.User;
+import com.splititup.backend.auth.repository.UserRepository;
+import com.splititup.backend.common.exception.AppException;
+import com.splititup.backend.security.JwtService;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+
+import static com.splititup.backend.common.security.SecurityUtils.currentUser;
+
+@Service
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtService jwtService,
+            RefreshTokenService refreshTokenService
+    ) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
+    }
+
+    @Transactional
+    public AuthResponse signup(SignupRequest request) {
+        if (userRepository.existsByEmailIgnoreCase(request.email())) {
+            throw new AppException(HttpStatus.CONFLICT, "Email is already registered");
+        }
+
+        User user = User.builder()
+                .name(request.name().trim())
+                .email(request.email().trim().toLowerCase())
+                .passwordHash(passwordEncoder.encode(request.password()))
+                .role(Role.ROLE_MEMBER)
+                .build();
+
+        User savedUser = userRepository.saveAndFlush(user);
+        Objects.requireNonNull(savedUser.getId(), "Generated user id is required before issuing tokens");
+        return issueTokens(savedUser);
+    }
+
+    @Transactional
+    public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.email().trim().toLowerCase(),
+                        request.password()
+                )
+        );
+
+        User user = userRepository.findByEmailIgnoreCase(request.email().trim())
+                .orElseThrow(() -> new AppException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
+
+        return issueTokens(user);
+    }
+
+    @Transactional
+    public AuthResponse refresh(RefreshTokenRequest request) {
+        RefreshToken token = refreshTokenService.validate(request.refreshToken());
+        User user = token.getUser();
+        return issueTokens(user);
+    }
+
+    @Transactional(readOnly = true)
+    public AuthUserResponse me() {
+        User user = currentUser();
+        return toUserResponse(user);
+    }
+
+    @Transactional
+    public AuthUserResponse updateMe(UpdateProfileRequest request) {
+        User current = currentUser();
+        User user = userRepository.findById(current.getId())
+                .orElseThrow(() -> new AppException(HttpStatus.UNAUTHORIZED, "Not authenticated"));
+        user.setName(request.name().trim());
+        User saved = userRepository.save(user);
+        return toUserResponse(saved);
+    }
+
+
+    private AuthResponse issueTokens(User user) {
+        String accessToken = jwtService.generateAccessToken(user);
+        RefreshToken refreshToken = refreshTokenService.issueToken(user);
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken.getToken(),
+                "Bearer",
+                jwtService.getAccessTokenExpirySeconds(),
+                toUserResponse(user)
+        );
+    }
+
+    private AuthUserResponse toUserResponse(User user) {
+        return new AuthUserResponse(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getRole()
+        );
+    }
+}

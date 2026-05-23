@@ -2,13 +2,13 @@
 
 ## Product Name
 
-SplitTrack (working title)
+SplitItUp (working title)
 
 ---
 
 ## 1. Overview
 
-SplitTrack is a cross-platform expense-sharing application designed to help users track shared expenses, calculate balances, and simplify debt settlements within groups or between individuals.
+SplitItUp is a cross-platform expense-sharing application designed to help users track shared expenses, calculate balances, and simplify debt settlements within groups or between individuals.
 
 The application allows users to:
 

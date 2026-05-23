@@ -1,13 +1,13 @@
-# SplitTrack Monorepo
+# SplitItUp Monorepo
 
-SplitTrack is a full-stack expense sharing application workspace with a Spring Boot backend and React frontend.
+SplitItUp is a full-stack expense sharing application workspace with a Spring Boot backend and React frontend.
 
 ## Project Layout
 
-- `splittrack-backend/`: Java backend (Spring Boot, JPA, Flyway, PostgreSQL)
-- `splittrack-frontend-v1/`: Primary React frontend (Vite + TypeScript)
-- `splittrack-ui/`: Additional UI workspace
-- `splittrack-web/`: Web workspace placeholder
+- `splititup-backend/`: Java backend (Spring Boot, JPA, Flyway, PostgreSQL)
+- `splititup-frontend-v1/`: Primary React frontend (Vite + TypeScript)
+- `splititup-ui/`: Additional UI workspace
+- `splititup-web/`: Web workspace placeholder
 - `stitch/`: Design/prototype artifacts
 
 ## Tech Stack
@@ -45,15 +45,15 @@ Install and verify:
 
 ## Backend Setup
 
-Path: `splittrack-backend/`
+Path: `splititup-backend/`
 
 ### 1. Database
 
-Create a PostgreSQL database named `splittrack`.
+Create a PostgreSQL database named `splititup`.
 
 Default connection values in backend config:
 
-- DB URL: `jdbc:postgresql://localhost:5432/splittrack`
+- DB URL: `jdbc:postgresql://localhost:5432/splititup`
 - DB username: `postgres`
 - DB password: `postgres`
 
@@ -71,7 +71,7 @@ You can set these before starting the backend:
 
 ### 3. Run Backend
 
-From `splittrack-backend/`:
+From `splititup-backend/`:
 
 ```powershell
 mvn spring-boot:run
@@ -89,7 +89,7 @@ Backend default URL:
 
 ## Frontend Setup
 
-Path: `splittrack-frontend-v1/`
+Path: `splititup-frontend-v1/`
 
 ### 1. Install dependencies
 
@@ -127,14 +127,14 @@ Open two terminals:
 Terminal 1:
 
 ```powershell
-cd splittrack-backend
+cd splititup-backend
 mvn spring-boot:run
 ```
 
 Terminal 2:
 
 ```powershell
-cd splittrack-frontend-v1
+cd splititup-frontend-v1
 npm install
 npm run dev
 ```
@@ -143,7 +143,7 @@ npm run dev
 
 ### Backend tests
 
-From `splittrack-backend/`:
+From `splititup-backend/`:
 
 ```powershell
 mvn test
@@ -151,7 +151,7 @@ mvn test
 
 ### Frontend checks
 
-From `splittrack-frontend-v1/`:
+From `splititup-frontend-v1/`:
 
 ```powershell
 npm run lint

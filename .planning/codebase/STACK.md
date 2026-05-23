@@ -14,38 +14,38 @@
 - Codegen: Lombok.
 
 Key files:
-- `splittrack-backend/pom.xml`
-- `splittrack-backend/src/main/java/com/splittrack/backend/SplittrackBackendApplication.java`
-- `splittrack-backend/src/main/resources/application.yml`
+- `splititup-backend/pom.xml`
+- `splititup-backend/src/main/java/com/splititup/backend/SplitItUpBackendApplication.java`
+- `splititup-backend/src/main/resources/application.yml`
 
 ## Frontend (primary)
-- App: `splittrack-frontend-v1`.
+- App: `splititup-frontend-v1`.
 - Frameworks: React 19, React Router 7, Vite 8.
 - Language: TypeScript 5.9.
 - UI: Tailwind CSS v4 (via PostCSS), Framer Motion, Lucide React.
 
 Key files:
-- `splittrack-frontend-v1/package.json`
-- `splittrack-frontend-v1/vite.config.ts`
-- `splittrack-frontend-v1/src/main.tsx`
-- `splittrack-frontend-v1/src/App.tsx`
+- `splititup-frontend-v1/package.json`
+- `splititup-frontend-v1/vite.config.ts`
+- `splititup-frontend-v1/src/main.tsx`
+- `splititup-frontend-v1/src/App.tsx`
 
 ## Frontend (secondary)
-- App: `splittrack-ui`.
+- App: `splititup-ui`.
 - Frameworks: React 19, Vite 8, TypeScript 5.9.
 
 Key files:
-- `splittrack-ui/package.json`
-- `splittrack-ui/vite.config.ts`
-- `splittrack-ui/src/main.tsx`
+- `splititup-ui/package.json`
+- `splititup-ui/vite.config.ts`
+- `splititup-ui/src/main.tsx`
 
 ## Tooling
 - Linting: ESLint config in both frontends.
-- Formatting: Prettier listed in `splittrack-frontend-v1/package.json`.
+- Formatting: Prettier listed in `splititup-frontend-v1/package.json`.
 - Root `package.json` contains only `lucide-react` dependency.
 
 ## Build and run
-- Backend: `mvn spring-boot:run` from `splittrack-backend`.
-- Frontend: `npm run dev` from `splittrack-frontend-v1`.
-- Backend tests: `mvn test` from `splittrack-backend`.
-- Frontend checks: `npm run lint`, `npm run build` from `splittrack-frontend-v1`.
+- Backend: `mvn spring-boot:run` from `splititup-backend`.
+- Frontend: `npm run dev` from `splititup-frontend-v1`.
+- Backend tests: `mvn test` from `splititup-backend`.
+- Frontend checks: `npm run lint`, `npm run build` from `splititup-frontend-v1`.
